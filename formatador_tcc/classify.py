@@ -74,6 +74,24 @@ class EstadoClassificacao:
     logo_apos_titulo: bool = False
 
 
+_ESTILOS_TITULO_NUMERADO = {
+    nome for nome, categoria in _MAPA_ESTILO_WORD.items()
+    if categoria in ("titulo1", "titulo2", "titulo3", "titulo4", "titulo5")
+}
+
+
+def eh_nome_de_estilo_titulo_numerado(nome_estilo: str | None) -> bool:
+    """True se `nome_estilo` for um dos estilos Heading 1-5 (ou seus
+    equivalentes em português). Usado para "rebaixar" o estilo de um
+    parágrafo que carrega um Heading indevido mas que a classificação
+    concluiu não ser, de fato, um título -- senão o Sumário nativo do Word
+    (que lê o nível de tópico do estilo, não a formatação visual aplicada)
+    continuaria listando esse parágrafo como se fosse um capítulo."""
+    if not nome_estilo:
+        return False
+    return nome_estilo.strip().lower() in _ESTILOS_TITULO_NUMERADO
+
+
 def _estilo_word(paragraph) -> str | None:
     try:
         nome = paragraph.style.name if paragraph.style else None
@@ -92,6 +110,19 @@ def _eh_citacao_longa_provavel(texto: str) -> bool:
     if t[0] in "\"“'" and t[-1] in "\"”'":
         return True
     return False
+
+
+_LIMITE_PALAVRAS_TITULO = 15
+
+
+def _parece_titulo(texto: str) -> bool:
+    """Proteção contra estilo de título mal aplicado: em TCCs reais é comum
+    um parágrafo de corpo (uma frase inteira, longa) acabar com um estilo
+    Heading 1-5 aplicado por engano (colagem de outro documento, clique
+    errado etc.). Isso não é uma regra ABNT -- é só uma heurística de
+    segurança: título de seção é curto, então um parágrafo comprido demais
+    não deve ser tratado como título mesmo que o Word diga que é um."""
+    return len(texto.split()) <= _LIMITE_PALAVRAS_TITULO
 
 
 def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
@@ -129,15 +160,30 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
         estado.logo_apos_titulo = True
         return "titulo1"
 
-    # 2) Estilo do Word explícito tem prioridade sobre heurística textual,
-    #    exceto para reclassificar a zona corrente.
+    # 2b) "Figura N", "Quadro N", "Tabela N", "Fonte:" -- um padrão de texto
+    #     inequívoco (nunca é o título de uma seção real) tem prioridade
+    #     sobre qualquer estilo Heading que porventura esteja aplicado ao
+    #     parágrafo (acontece em documentos reais: a legenda herda um estilo
+    #     de título por engano ao colar de outro lugar).
+    if estado.zona == ZONA_CORPO:
+        if RE_LEGENDA.match(texto):
+            estado.logo_apos_titulo = False
+            return "legenda"
+        if RE_FONTE.match(texto):
+            estado.logo_apos_titulo = False
+            return "fonte_ilustracao"
+
+    # 3) Estilo do Word explícito tem prioridade sobre heurística textual,
+    #    exceto para reclassificar a zona corrente -- e exceto quando o
+    #    texto é longo demais para ser plausivelmente um título (proteção
+    #    contra estilo de título aplicado por engano a um parágrafo comum).
     estilo_mapeado = _estilo_word(paragraph)
-    if estilo_mapeado in ("titulo1", "titulo2", "titulo3", "titulo4", "titulo5"):
+    if estilo_mapeado in ("titulo1", "titulo2", "titulo3", "titulo4", "titulo5") and _parece_titulo(texto):
         estado.zona = ZONA_CORPO
         estado.logo_apos_titulo = True
         return estilo_mapeado
 
-    # 3) Título numerado digitado manualmente (sem estilo Heading aplicado).
+    # 4) Título numerado digitado manualmente (sem estilo Heading aplicado).
     #    Apêndice I limita a numeração progressiva até a seção quinária
     #    (1.1.1.1.1), inclusive.
     m = RE_TITULO_NUMERADO.match(texto)
@@ -155,7 +201,7 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
         estado.logo_apos_titulo = False
         return "fonte_ilustracao"
 
-    # 4) Conteúdo dentro de zonas conhecidas.
+    # 5) Conteúdo dentro de zonas conhecidas.
     if estado.zona == ZONA_REFERENCIAS:
         estado.logo_apos_titulo = False
         return "referencia"
@@ -176,12 +222,7 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
         return classificar_paragrafo(paragraph, estado)
 
     if estado.zona == ZONA_CORPO:
-        if RE_LEGENDA.match(texto):
-            estado.logo_apos_titulo = False
-            return "legenda"
-        if RE_FONTE.match(texto):
-            estado.logo_apos_titulo = False
-            return "fonte_ilustracao"
+        # legenda/fonte já foram tratadas no passo 2b, antes do estilo Word
         if _eh_citacao_longa_provavel(texto):
             estado.logo_apos_titulo = False
             return "citacao_longa"
@@ -189,7 +230,7 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
         estado.logo_apos_titulo = False
         return categoria
 
-    # 5) Fora de qualquer zona reconhecida (capa, folha de rosto, ficha
+    # 6) Fora de qualquer zona reconhecida (capa, folha de rosto, ficha
     #    catalográfica, dedicatória, agradecimentos, epígrafe, listas...).
     estado.logo_apos_titulo = False
     return "outro"

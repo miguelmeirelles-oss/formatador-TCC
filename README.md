@@ -19,14 +19,22 @@ precisa de revisão manual.
 1. **Normaliza a formatação** de cada parágrafo (fonte Times New Roman 12,
    espaçamento 1,5, recuo de primeira linha 1,25cm, margens 3/2/3/2cm,
    legendas de figura/quadro/tabela, citações diretas longas com recuo de
-   4cm etc.), classificando cada parágrafo pelo estilo do Word que o aluno
-   usou (se partiu do modelo oficial) ou por heurísticas de texto (título
-   numerado digitado manualmente, palavras-chave como
-   RESUMO/ABSTRACT/REFERÊNCIAS). Suporta os 5 níveis de título do Apêndice I
-   (seção primária a quinária), cada um com seu padrão de negrito/maiúsculas/
-   itálico, e insere quebra de página antes de cada seção primária ("As
-   seções primárias devem iniciar SEMPRE em páginas distintas" -- Apêndice
-   I). Ver `formatador_tcc/classify.py` e `formatador_tcc/config.py`.
+   4cm, conteúdo interno de tabelas em 10pt etc.), classificando cada
+   parágrafo pelo estilo do Word que o aluno usou (se partiu do modelo
+   oficial) ou por heurísticas de texto (título numerado digitado
+   manualmente, palavras-chave como RESUMO/ABSTRACT/REFERÊNCIAS). Suporta os
+   5 níveis de título do Apêndice I (seção primária a quinária), cada um com
+   seu padrão de negrito/maiúsculas/itálico, e insere quebra de página antes
+   de cada seção primária ("As seções primárias devem iniciar SEMPRE em
+   páginas distintas" -- Apêndice I) -- inclusive removendo quebras de
+   página manuais que o aluno tenha colocado em outro lugar, já que ficam
+   redundantes ou erradas com a quebra automática. Também tem uma proteção
+   contra estilo de título aplicado por engano (comum ao colar conteúdo de
+   outro documento): um parágrafo comprido demais ou uma legenda de
+   figura/tabela com estilo "Heading N" não é tratado como título, e perde
+   esse estilo (senão o Sumário nativo do Word continuaria listando esse
+   parágrafo como se fosse um capítulo). Ver `formatador_tcc/classify.py` e
+   `formatador_tcc/config.py`.
 
 2. **Reconstrói o SUMÁRIO** como um campo TOC nativo do Word (`{ TOC }`),
    em vez de tentar calcular números de página manualmente -- o próprio
@@ -42,7 +50,11 @@ precisa de revisão manual.
    contagem, conforme o próprio modelo oficial detalha em um comentário) --
    pelo mesmo motivo do Sumário, é o Word quem recalcula o número certo ao
    abrir o arquivo, não há como calcular isso sem um motor de paginação de
-   verdade. Ver `formatador_tcc/paginacao.py`.
+   verdade. Cabeçalho é uma propriedade de *seção* do Word, não de página --
+   por isso, se o aluno não tiver preservado as quebras de seção do modelo
+   oficial (comum: o trabalho inteiro numa seção só), a ferramenta insere a
+   quebra de seção que falta antes da Introdução automaticamente. Ver
+   `formatador_tcc/paginacao.py`.
 
 4. **Confere a contagem de palavras** do Resumo e do Abstract contra a
    regra explícita do modelo oficial (mínimo 150, máximo 500 palavras).
@@ -89,7 +101,10 @@ python -m formatador_tcc entrada.docx --saida saida.docx --relatorio relatorio.m
 | Quebra de página antes de cada seção primária | Citação sem referência correspondente |
 | Entradas antigas do sumário → campo TOC nativo | Referência nunca citada no texto |
 | Numeração de página (canto superior direito, a partir da Introdução) | Resumo/Abstract fora do intervalo de 150–500 palavras |
-| Recuo de citação direta longa (heurística) | |
+| Recuo de citação direta longa (heurística) | Casos de figura/tabela que a heurística de legenda não reconheceu |
+| Fonte do conteúdo interno de tabelas (10pt) | |
+| Quebras de página manuais redundantes/erradas removidas | |
+| Estilo de título (Heading N) tirado de parágrafo/legenda que herdou por engano | |
 
 O motivo de não corrigir a segunda coluna automaticamente é que fazer isso
 exigiria **decidir por conta própria** o que o aluno quis dizer (ex.:
@@ -115,6 +130,13 @@ o que violaria a regra de não alterar o conteúdo escrito pelo aluno.
 - A detecção automática de "citação direta longa" (recuo de 4cm) é
   conservadora (só age quando o parágrafo inteiro está entre aspas e é
   longo); citações longas sem aspas não são identificadas.
+- A proteção contra estilo de título aplicado por engano (ver seção 1 acima)
+  usa uma heurística de tamanho: um parágrafo com estilo Heading 1-5 e mais
+  de 15 palavras é tratado como corpo de texto, não título. Isso não é uma
+  regra ABNT, é só uma heurística de segurança (`_LIMITE_PALAVRAS_TITULO` em
+  `classify.py`) -- na prática rara de o trabalho ter um título de seção
+  genuinamente longo, ele seria rebaixado incorretamente para corpo de
+  texto; o valor pode ser ajustado se isso acontecer.
 - A checagem de contagem de palavras hoje cobre apenas Resumo/Abstract,
   porque é a única regra numérica explícita no modelo oficial. Se a
   instituição tiver uma faixa de páginas/palavras exigida para o trabalho

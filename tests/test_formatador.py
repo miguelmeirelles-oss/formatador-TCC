@@ -158,6 +158,94 @@ def test_paginas_pretextuais_em_algarismo_romano_nao_confundem_sumario(construir
     assert categorias[7] == "titulo1"
 
 
+def test_legenda_com_estilo_de_titulo_nao_vira_titulo(construir_docx):
+    """Regressão: um TCC real tinha a legenda 'Tabela 2.1 Valores...' com o
+    estilo 'Heading 5' aplicado por engano (colagem de outro documento). A
+    ferramenta confiava cegamente no estilo e tratava como um título de
+    seção quinária -- inclusive entrando no Sumário."""
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("heading5", "Tabela 2.1 Valores codificados e reais das variáveis"),
+    ])
+    estado = EstadoClassificacao()
+    categorias = [classificar_paragrafo(p, estado) for p in d.paragraphs]
+    assert categorias[2] == "legenda"
+
+
+def test_paragrafo_de_corpo_com_estilo_de_titulo_nao_vira_titulo(construir_docx):
+    """Regressão: um parágrafo de corpo inteiro (frase longa) tinha o
+    estilo 'Heading 2' aplicado por engano -- a ferramenta confiava
+    cegamente no estilo e formatava o parágrafo inteiro como título
+    (inclusive em CAIXA ALTA), destruindo a legibilidade do texto."""
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("heading2", "Com a finalidade de estudar o impacto dos espessantes "
+                      "goma xantana e CMC nas propriedades físico-químicas "
+                      "do produto final, foram realizados diversos testes."),
+    ])
+    estado = EstadoClassificacao()
+    categorias = [classificar_paragrafo(p, estado) for p in d.paragraphs]
+    assert categorias[2] in ("corpo", "corpo_sem_recuo")
+
+
+def test_quebra_de_pagina_manual_e_removida(construir_docx):
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("texto", "Texto antes da quebra."),
+    ])
+    from docx.oxml.ns import qn
+    from docx.oxml import OxmlElement
+
+    paragrafo_vazio = d.add_paragraph()
+    br = OxmlElement("w:br")
+    br.set(qn("w:type"), "page")
+    paragrafo_vazio.add_run()._element.append(br)
+
+    assert any(
+        r._element.findall(qn("w:br")) for p in d.paragraphs for r in p.runs
+    )
+
+    formatar_documento(d)
+
+    assert not any(
+        b.get(qn("w:type")) == "page"
+        for p in d.paragraphs for r in p.runs for b in r._element.findall(qn("w:br"))
+    )
+
+
+def test_tabela_tem_fonte_normalizada(construir_docx):
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+    ])
+    tabela = d.add_table(rows=1, cols=1)
+    run = tabela.rows[0].cells[0].paragraphs[0].add_run("Conteúdo da célula")
+    run.font.size = None
+
+    formatar_documento(d)
+
+    celula_run = tabela.rows[0].cells[0].paragraphs[0].runs[0]
+    assert celula_run.font.name == "Times New Roman"
+    assert celula_run.font.size.pt == 10.0
+
+
+def test_legenda_com_estilo_de_titulo_perde_o_estilo_heading(construir_docx):
+    """Regressão: não basta classificar corretamente como "legenda" -- se o
+    parágrafo continuar com o estilo Word 'Heading 5', o campo de Sumário
+    nativo (que lê o nível de tópico do estilo, não a formatação visual)
+    continuaria listando a legenda como se fosse um título de seção."""
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("heading5", "Tabela 2.1 Valores codificados e reais das variáveis"),
+    ])
+    formatar_documento(d)
+    assert d.paragraphs[2].style.name == "Normal"
+
+
 def test_sumario_reconstroi_campo_toc(construir_docx):
     d = construir_docx([
         ("titulo_sem_numero", "SUMÁRIO"),

@@ -20,6 +20,7 @@ atualização de campos ao abrir, configurado por sumario.py).
 """
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
 
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -49,6 +50,45 @@ def _mapear_paragrafo_para_secao(document) -> list[int]:
             if ppr is not None and ppr.find(qn("w:sectPr")) is not None:
                 secao_atual += 1
     return mapa
+
+
+def _garantir_secao_propria_a_partir_de(document, indice_paragrafo: int) -> None:
+    """Garante que o parágrafo em `indice_paragrafo` seja o primeiro de uma
+    seção própria, inserindo uma quebra de seção (nova página) logo antes
+    dele se ainda não houver uma.
+
+    Muitos alunos digitam o trabalho inteiro numa única seção do Word (sem
+    preservar as quebras de seção do modelo oficial) -- sem uma seção
+    própria a partir da Introdução, não há como o cabeçalho (onde fica o
+    número de página) ser diferente antes e depois dela, porque cabeçalho é
+    uma propriedade de seção, não de página. Isso também garante que a
+    Introdução comece numa página nova, conforme o Apêndice I.
+    """
+    if indice_paragrafo <= 0:
+        return
+
+    mapa = _mapear_paragrafo_para_secao(document)
+    if indice_paragrafo >= len(mapa):
+        return
+    if mapa[indice_paragrafo] != mapa[indice_paragrafo - 1]:
+        return  # já é o início de uma seção
+
+    paragrafos = document.paragraphs
+    anterior = paragrafos[indice_paragrafo - 1]
+    secao_atual = document.sections[mapa[indice_paragrafo]]
+
+    nova_sectPr = copy.deepcopy(secao_atual._sectPr)
+    # a cópia não pode manter as referências de cabeçalho/rodapé da seção
+    # original -- senão as duas seções passam a apontar para a mesma parte
+    # do pacote (mesmo r:id), e mexer no cabeçalho de uma mexe na outra
+    # também. A seção nova (a que fica ANTES da quebra) começa "vinculada
+    # à anterior" (sem cabeçalho próprio), que é o padrão do Word.
+    for tag in (qn("w:headerReference"), qn("w:footerReference")):
+        for ref in nova_sectPr.findall(tag):
+            nova_sectPr.remove(ref)
+
+    ppr = anterior._p.get_or_add_pPr()
+    ppr.append(nova_sectPr)
 
 
 def _indice_primeiro_titulo1(document) -> int | None:
@@ -104,6 +144,8 @@ def aplicar_numeracao_paginas(document) -> ResultadoPaginacao:
     if indice_intro is None:
         return ResultadoPaginacao(aplicada=False)
 
+    _garantir_secao_propria_a_partir_de(document, indice_intro)
+
     mapa_secoes = _mapear_paragrafo_para_secao(document)
     if indice_intro >= len(mapa_secoes):
         return ResultadoPaginacao(aplicada=False)
@@ -112,6 +154,18 @@ def aplicar_numeracao_paginas(document) -> ResultadoPaginacao:
     secoes = document.sections
     if secao_idx >= len(secoes):
         return ResultadoPaginacao(aplicada=False)
+
+    # Garante que nenhuma seção pré-textual mostre número de página, mesmo
+    # que o documento já tivesse algo (errado) configurado ali antes --
+    # por exemplo, reprocessar um arquivo que passou por uma versão antiga
+    # desta ferramenta e ficou com um campo de página na seção errada. Só
+    # esvazia o conteúdo (cabeçalho em branco = nada aparece na página,
+    # independente do que a seção 0 reporta para is_linked_to_previous --
+    # esse flag tem um comportamento instável especificamente na primeira
+    # seção do documento).
+    for s in secoes[:secao_idx]:
+        for child in list(s.header._element):
+            s.header._element.remove(child)
 
     secao = secoes[secao_idx]
     secao.header.is_linked_to_previous = False

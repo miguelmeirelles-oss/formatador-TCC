@@ -37,6 +37,8 @@ def _bloco_formatacao(eventos: list[EventoFormatacao]) -> list[str]:
             "resumo_corpo": "Parágrafos do Resumo/Abstract",
             "corpo": "Parágrafos de texto corrido",
             "corpo_sem_recuo": "Parágrafos de texto corrido (1º após título)",
+            "tabela_conteudo": "Parágrafos dentro de tabelas (fonte normalizada)",
+            "quebra_pagina_removida": "Quebras de página manuais removidas (redundantes)",
         }
         for categoria, total in contagem.most_common():
             linhas.append(f"- {rotulos.get(categoria, categoria)}: {total}")

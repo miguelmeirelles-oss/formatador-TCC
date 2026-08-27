@@ -5,12 +5,15 @@ from formatador_tcc.paginacao import aplicar_numeracao_paginas
 
 
 def _construir_docx_com_secoes():
+    """Documento com as quebras de seção já no lugar certo (como o modelo
+    oficial), incluindo uma antes da Introdução."""
     d = docx.Document()
     d.add_paragraph("CAPA")
     d.add_section(WD_SECTION.NEW_PAGE)
     d.add_paragraph("FICHA CATALOGRÁFICA")
     d.add_section(WD_SECTION.NEW_PAGE)
     d.add_paragraph("SUMÁRIO")
+    d.add_section(WD_SECTION.NEW_PAGE)
     p = d.add_paragraph("INTRODUÇÃO")
     p.style = d.styles["Heading 1"]
     d.add_paragraph("Texto do primeiro parágrafo.")
@@ -20,27 +23,45 @@ def _construir_docx_com_secoes():
     return d
 
 
+def _construir_docx_secao_unica():
+    """Documento inteiro numa seção só, sem nenhuma quebra de seção --
+    situação real de TCCs de alunos que não preservaram as quebras do
+    modelo oficial ao digitar o trabalho."""
+    d = docx.Document()
+    d.add_paragraph("CAPA")
+    d.add_paragraph("FICHA CATALOGRÁFICA")
+    d.add_paragraph("SUMÁRIO")
+    p = d.add_paragraph("INTRODUÇÃO")
+    p.style = d.styles["Heading 1"]
+    d.add_paragraph("Texto do primeiro parágrafo.")
+    return d
+
+
 def test_numeracao_aplicada_a_partir_da_introducao():
     d = _construir_docx_com_secoes()
     resultado = aplicar_numeracao_paginas(d)
 
     assert resultado.aplicada is True
-    # a Introdução está na última seção (2 quebras de seção antes dela)
-    assert resultado.secao_introducao == 2
+    # a Introdução está na última seção (3 quebras de seção antes dela:
+    # Capa | Ficha Catalográfica | Sumário | Introdução...)
+    assert resultado.secao_introducao == 3
 
     secoes = d.sections
-    # seções anteriores continuam sem cabeçalho próprio
-    assert secoes[0].header.is_linked_to_previous is True
-    assert secoes[1].header.is_linked_to_previous is True
+    # seções anteriores continuam sem número de página visível (o cabeçalho
+    # da seção 0 pode reportar is_linked_to_previous de forma inconsistente
+    # -- é uma particularidade da primeira seção do documento -- por isso a
+    # checagem que importa de fato é o conteúdo do cabeçalho estar vazio)
+    for s in secoes[:3]:
+        assert "".join(p.text for p in s.header.paragraphs) == ""
     # a seção da Introdução tem cabeçalho próprio com o campo de página
-    assert secoes[2].header.is_linked_to_previous is False
+    assert secoes[3].header.is_linked_to_previous is False
 
 
 def test_campo_de_pagina_tem_formula_com_offset_correto():
     d = _construir_docx_com_secoes()
     aplicar_numeracao_paginas(d)
 
-    header = d.sections[2].header
+    header = d.sections[3].header
     xml = header._element.xml
     assert "=PAGE-2" in xml
     assert 'w:jc w:val="right"' in xml
@@ -49,15 +70,63 @@ def test_campo_de_pagina_tem_formula_com_offset_correto():
 def test_nao_duplica_campo_se_ja_houver_conteudo_no_cabecalho(construir_docx):
     d = _construir_docx_com_secoes()
     # simula um bloco de número de página já existente (como no modelo oficial)
-    secao = d.sections[2]
+    secao = d.sections[3]
     secao.header.is_linked_to_previous = False
     secao.header.add_paragraph("2")
 
     aplicar_numeracao_paginas(d)
 
-    header = d.sections[2].header
+    header = d.sections[3].header
     assert len(header.paragraphs) == 1
     assert "=PAGE-2" in header._element.xml
+
+
+def test_documento_de_secao_unica_ganha_quebra_de_secao_na_introducao():
+    """Regressão: um TCC real de aluno tinha o documento inteiro numa única
+    seção (nenhuma quebra de seção preservada do modelo oficial). Como
+    cabeçalho é uma propriedade de seção, sem dividir em duas seções não
+    havia como mostrar o número só a partir da Introdução -- ou aparecia
+    também na capa, ou não aparecia em lugar nenhum."""
+    d = _construir_docx_secao_unica()
+    assert len(d.sections) == 1
+
+    resultado = aplicar_numeracao_paginas(d)
+
+    assert resultado.aplicada is True
+    assert len(d.sections) == 2
+    assert resultado.secao_introducao == 1
+
+    secoes = d.sections
+    assert "".join(p.text for p in secoes[0].header.paragraphs) == ""
+    assert secoes[1].header.is_linked_to_previous is False
+    assert "=PAGE-2" in secoes[1].header._element.xml
+
+    # o texto continua intacto, nenhum parágrafo foi criado/removido
+    textos = [p.text for p in d.paragraphs]
+    assert textos == ["CAPA", "FICHA CATALOGRÁFICA", "SUMÁRIO", "INTRODUÇÃO",
+                       "Texto do primeiro parágrafo."]
+
+
+def test_limpa_campo_de_pagina_deixado_em_secao_pretextual_por_execucao_anterior():
+    """Regressão: um TCC real, já processado uma vez por uma versão com bug
+    (que colocava o campo de página na seção errada, lá na Capa), foi
+    reprocessado com a versão corrigida. O campo antigo, errado, continuava
+    lá na seção pré-textual -- precisa ser limpo, não só ignorado."""
+    d = _construir_docx_secao_unica()
+    # simula o estado deixado por uma execução anterior com bug: campo de
+    # página na ÚNICA seção existente (que cobre capa + tudo mais)
+    secao = d.sections[0]
+    secao.header.is_linked_to_previous = False
+    secao.header.add_paragraph("2")
+
+    resultado = aplicar_numeracao_paginas(d)
+
+    assert resultado.aplicada is True
+    secoes = d.sections
+    # a seção pré-textual (agora seção 0, separada da Introdução) não deve
+    # mais ter o "2" órfão da execução anterior
+    assert "".join(p.text for p in secoes[0].header.paragraphs) == ""
+    assert "=PAGE-2" in secoes[1].header._element.xml
 
 
 def test_documento_sem_titulo1_nao_aplica_numeracao():

@@ -26,6 +26,10 @@ def construir_docx():
                 _heading(d, texto, 2)
             elif tipo in ("heading3", "titulo3"):
                 _heading(d, texto, 3)
+            elif tipo in ("heading4", "titulo4"):
+                _heading(d, texto, 4)
+            elif tipo in ("heading5", "titulo5"):
+                _heading(d, texto, 5)
             else:
                 d.add_paragraph(texto)
         return d

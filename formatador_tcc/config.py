@@ -151,6 +151,12 @@ FONTE_ILUSTRACAO = EstiloParagrafo(
 )
 PREFIXO_FONTE_NEGRITO = "Fonte:"
 
+# Apêndice I: "O tamanho da fonte na parte interna da tabela é 10" (e também
+# "na parte interna das ilustrações"). Só o tamanho é normatizado -- o
+# Apêndice I não define alinhamento/negrito para o conteúdo de dentro da
+# tabela, então isso fica como o aluno escreveu.
+TABELA_CONTEUDO_TAMANHO_PT = 10.0
+
 # Citação direta longa (mais de 3 linhas) -- NBR 10520.
 CITACAO_LONGA = EstiloParagrafo(
     tamanho_pt=10.0,
