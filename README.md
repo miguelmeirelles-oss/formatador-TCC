@@ -112,15 +112,54 @@ python -m webapp.app
 
 Abre em `http://127.0.0.1:5000`.
 
-**Sobre hospedar isso para os alunos usarem de verdade:** o app está pronto
-para rodar num servidor único (um Render/Railway/VM da instituição, por
-exemplo -- qualquer lugar que rode uma aplicação WSGI Python). A única
-limitação atual é que o link de download fica guardado em memória do
-processo (suficiente para um servidor único de uso departamental); se um
-dia isso precisar rodar em vários processos/réplicas ao mesmo tempo, essa
-parte precisaria trocar para um storage compartilhado (arquivo temporário
-em disco compartilhado, S3, etc.) -- é uma mudança pequena e isolada em
-`webapp/app.py`, não afeta o motor de formatação.
+### Colocando no ar para os alunos (deploy no Render, grátis)
+
+O jeito mais simples de dar aos alunos um link público, sem precisar
+instalar nada em servidor nenhum manualmente, é o [Render](https://render.com)
+(tem plano gratuito). O repositório já vem pronto para isso (`Procfile` +
+`webapp/requirements.txt`). Passo a passo:
+
+1. Crie uma conta em [render.com](https://render.com) (dá para entrar direto
+   com a conta do GitHub que já tem acesso a este repositório).
+2. No painel do Render, clique em **New +** → **Web Service**.
+3. Escolha **Build and deploy from a Git repository** e conecte o repositório
+   `miguelmeirelles-oss/formatador-TCC` (o Render vai pedir autorização para
+   acessar seus repositórios do GitHub -- autorize).
+4. Preencha:
+   - **Name**: qualquer nome (ex.: `formatador-tcc`).
+   - **Branch**: `claude/tcc-formatter-program-1j4zbt` (ou `main`, depois que
+     o PR for aceito).
+   - **Runtime**: `Python 3`.
+   - **Build Command**: `pip install -r requirements.txt -r webapp/requirements.txt`
+   - **Start Command**: `gunicorn --workers 1 --bind 0.0.0.0:$PORT webapp.app:app`
+   - **Instance Type**: `Free`.
+5. Clique em **Create Web Service** e aguarde o build (leva alguns minutos
+   na primeira vez).
+6. Quando terminar, o Render mostra uma URL pública tipo
+   `https://formatador-tcc.onrender.com` -- esse é o link que os alunos vão
+   acessar. Não precisa mexer em mais nada.
+
+**Sobre o plano gratuito:** o serviço "dorme" depois de um tempo sem uso e
+demora ~30-60 segundos para acordar no primeiro acesso do dia -- aceitável
+para uso departamental, mas se isso incomodar dá para migrar para um plano
+pago do Render (ou outro provedor) sem mudar nada no código.
+
+**Por que `--workers 1`:** o link de download fica guardado em memória do
+processo que gerou o arquivo; com mais de um worker, um pedido de download
+poderia cair num processo diferente do que processou o upload e falhar. Não
+aumente os workers sem antes trocar esse armazenamento por algo
+compartilhado (arquivo temporário em disco compartilhado, S3 etc.) em
+`webapp/app.py` -- é uma mudança pequena e isolada, não afeta o motor de
+formatação.
+
+### Embutindo na página do Wix
+
+O app não envia cabeçalho `X-Frame-Options` nem `Content-Security-Policy`,
+então pode ser embutido normalmente num `<iframe>` dentro do Wix (mesmo
+padrão usado no formulário de Ata de Defesa). No editor do Wix: adicione um
+elemento **Embed → Custom Embed → Embed a Widget/iframe** na página
+`projeto-final-tcc`, e aponte para a URL pública do Render (ex.:
+`https://formatador-tcc.onrender.com`).
 
 Se preferir manter tudo dentro do Google Workspace/Wix como o projeto de
 Ata de Defesa que vocês já têm, dá para reaproveitar o mesmo formulário

@@ -33,6 +33,11 @@ app.config["MAX_CONTENT_LENGTH"] = 30 * 1024 * 1024  # 30 MB
 # suficiente para um servidor único de demonstração/uso departamental; para
 # produção com múltiplos processos, trocar por um storage compartilhado
 # (ex.: arquivo temporário, S3, etc.) seria o próximo passo.
+#
+# IMPORTANTE: por isso o Procfile sobe o gunicorn com --workers 1. Com mais
+# de um worker, o upload e o download poderiam cair em processos diferentes
+# e o link de download "não seria encontrado" -- não aumente os workers sem
+# antes trocar esse storage por algo compartilhado entre processos.
 _MAX_RESULTADOS_EM_MEMORIA = 50
 _resultados: "OrderedDict[str, tuple[bytes, str]]" = OrderedDict()
 
