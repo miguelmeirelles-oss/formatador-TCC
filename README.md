@@ -97,6 +97,38 @@ o que violaria a regra de não alterar o conteúdo escrito pelo aluno.
   `_formatado.docx` gerado no Word real antes de considerar o processo
   concluído.
 
+## Interface web
+
+Para os alunos não precisarem rodar nada em linha de comando, há um app web
+mínimo em `webapp/` (Flask): o aluno sobe o `.docx`, a página mostra o
+relatório de conferência e oferece o botão de download do `.docx`
+formatado. Tudo roda em memória (o motor é o mesmo do CLI, via
+`formatador_tcc.pipeline`) -- nada é gravado em disco.
+
+```bash
+pip install -r webapp/requirements.txt
+python -m webapp.app
+```
+
+Abre em `http://127.0.0.1:5000`.
+
+**Sobre hospedar isso para os alunos usarem de verdade:** o app está pronto
+para rodar num servidor único (um Render/Railway/VM da instituição, por
+exemplo -- qualquer lugar que rode uma aplicação WSGI Python). A única
+limitação atual é que o link de download fica guardado em memória do
+processo (suficiente para um servidor único de uso departamental); se um
+dia isso precisar rodar em vários processos/réplicas ao mesmo tempo, essa
+parte precisaria trocar para um storage compartilhado (arquivo temporário
+em disco compartilhado, S3, etc.) -- é uma mudança pequena e isolada em
+`webapp/app.py`, não afeta o motor de formatação.
+
+Se preferir manter tudo dentro do Google Workspace/Wix como o projeto de
+Ata de Defesa que vocês já têm, dá para reaproveitar o mesmo formulário
+HTML como frontend e usar `UrlFetchApp` do Apps Script para chamar esse
+backend Python hospedado à parte (o Apps Script sozinho, via
+`DocumentApp`, não consegue reproduzir o nível de controle de formatação
+que este motor faz).
+
 ## Rodando os testes
 
 ```bash
@@ -106,12 +138,11 @@ python -m pytest tests/ -v
 
 ## Próximos passos sugeridos
 
-- Empacotar como serviço web (ex.: reaproveitando o padrão do projeto de
-  Ata de Defesa já existente: formulário → upload do `.docx` → download do
-  `.docx` formatado + relatório), já que os alunos escrevem no Word e não
-  devem precisar rodar um script manualmente.
+- Hospedar o app web (`webapp/`) num servidor real (institucional ou
+  Render/Railway) para os alunos usarem sem precisar instalar nada.
 - Ampliar `referencias_check.py` com validações específicas por tipo de
   referência (livro, artigo, site, norma, legislação), hoje tratadas de
-  forma genérica.
+  forma genérica -- assim que houver mais detalhes das regras da
+  instituição para cada tipo.
 - Se a instituição definir uma faixa de páginas/palavras para o trabalho
   completo, adicionar essa checagem em `contagem.py`.

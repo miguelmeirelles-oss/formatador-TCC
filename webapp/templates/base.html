@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Formatador de TCC (ABNT){% endblock %}</title>
+<style>
+  :root {
+    --azul: #1f3a5f;
+    --azul-md: #2f5d8a;
+    --azul-lt: #eaf1fa;
+    --fundo: #f2f4f8;
+    --card: #ffffff;
+    --borda: #d7dee8;
+    --texto: #1a1a2e;
+    --texto-s: #5a6481;
+    --verde: #1b6e3a;
+    --verde-lt: #eafaf1;
+    --laranja: #7a4500;
+    --laranja-lt: #fff4e0;
+    --vermelho: #b71c1c;
+    --verm-lt: #feecec;
+    --raio: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+    line-height: 1.55;
+    padding: 24px 16px 60px;
+  }
+  .pagina { max-width: 760px; margin: 0 auto; }
+  .cabecalho { background: var(--azul); color: #fff; border-radius: var(--raio) var(--raio) 0 0; padding: 26px 28px; text-align: center; }
+  .cabecalho h1 { font-size: 1.3rem; }
+  .cabecalho p { font-size: .85rem; opacity: .85; margin-top: 6px; }
+  .card { background: var(--card); border-radius: 0 0 var(--raio) var(--raio); box-shadow: 0 2px 12px rgba(0,0,0,.08); padding: 28px; }
+  .aviso { background: var(--laranja-lt); border: 1.5px solid #e0a830; color: var(--laranja); border-radius: 8px; padding: 12px 16px; font-size: .88rem; margin-bottom: 18px; }
+  .erro { background: var(--verm-lt); border: 1.5px solid #e08080; color: var(--vermelho); border-radius: 8px; padding: 12px 16px; font-size: .88rem; margin-bottom: 18px; }
+  label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 8px; color: var(--texto-s); }
+  input[type=file] { width: 100%; padding: 12px; border: 1.5px dashed var(--borda); border-radius: 8px; background: var(--azul-lt); font-size: .88rem; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--azul); color: #fff; border: none; border-radius: 8px; padding: 13px 22px; font-size: .95rem; font-weight: 700; cursor: pointer; text-decoration: none; margin-top: 18px; }
+  .btn:hover { background: var(--azul-md); }
+  .btn-secundario { background: none; border: 1.5px solid var(--borda); color: var(--texto-s); }
+  .btn-secundario:hover { background: var(--azul-lt); color: var(--azul); }
+  .relatorio h1 { font-size: 1.15rem; margin: 22px 0 10px; color: var(--azul); }
+  .relatorio h2 { font-size: 1rem; margin: 20px 0 8px; color: var(--azul); border-bottom: 1.5px solid var(--azul-lt); padding-bottom: 4px; }
+  .relatorio h3 { font-size: .92rem; margin: 14px 0 6px; }
+  .relatorio p { font-size: .88rem; margin: 6px 0; }
+  .relatorio ul { margin: 6px 0 6px 22px; }
+  .relatorio li { font-size: .85rem; margin-bottom: 4px; }
+  .rodape { text-align: center; font-size: .78rem; color: var(--texto-s); margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="pagina">
+  <div class="cabecalho">
+    <h1>📄 Formatador de TCC (ABNT)</h1>
+    <p>Normaliza a formatação do seu TCC e confere as regras de citação e referências</p>
+  </div>
+  <div class="card">
+    {% block conteudo %}{% endblock %}
+  </div>
+  <p class="rodape">A ferramenta não altera o texto escrito por você -- apenas a formatação. Sempre confira o resultado antes de entregar.</p>
+</div>
+</body>
+</html>

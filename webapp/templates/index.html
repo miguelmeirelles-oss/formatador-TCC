@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block conteudo %}
+{% if erro %}
+  <div class="erro">⚠️ {{ erro }}</div>
+{% endif %}
+
+<form action="{{ url_for('processar') }}" method="post" enctype="multipart/form-data">
+  <label for="documento">Envie o arquivo .docx do seu TCC</label>
+  <input type="file" id="documento" name="documento" accept=".docx" required>
+  <div class="aviso" style="margin-top: 14px;">
+    O arquivo precisa ser <strong>.docx</strong> (Word 2007 ou mais recente). Se o seu
+    arquivo está em .doc, abra no Word e use "Salvar como" → .docx antes de enviar.
+  </div>
+  <button type="submit" class="btn">Formatar e conferir</button>
+</form>
+{% endblock %}

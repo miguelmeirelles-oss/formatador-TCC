@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<a class="btn" href="{{ url_for('baixar', token=token) }}">⬇ Baixar {{ nome_saida }}</a>
+<a class="btn btn-secundario" href="{{ url_for('nova') }}">↩ Enviar outro arquivo</a>
+
+<div class="relatorio">
+{{ relatorio_html | safe }}
+</div>
+{% endblock %}
