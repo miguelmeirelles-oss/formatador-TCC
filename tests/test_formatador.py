@@ -130,6 +130,34 @@ def test_toc_cache_de_referencias_nao_e_confundido_com_titulo(construir_docx):
     assert textos.count("REFERÊNCIAS") == 1
 
 
+def test_paginas_pretextuais_em_algarismo_romano_nao_confundem_sumario(construir_docx):
+    """Regressão: um TCC real de aluno tinha as páginas pré-textuais (antes
+    da Introdução) numeradas em algarismos romanos (ex.: "Sumário\\tix"),
+    convenção comum em ABNT. Como RE_LINHA_SUMARIO só reconhecia dígitos
+    decimais, essas linhas "saíam" da zona de SUMÁRIO cedo demais e a
+    entrada de cache "1\\tIntrodução\\t1" era confundida com o título real,
+    fazendo a numeração de página (e a quebra de página) cair na seção
+    errada, bem no início do documento."""
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("texto", "Sumário\tix"),
+        ("texto", "Lista de Figuras\txii"),
+        ("texto", "1\tIntrodução\t1"),
+        ("texto", "2\tObjetivos\t2"),
+        ("heading1", "Introdução"),
+        ("texto", "Corpo do texto."),
+        ("heading1", "Objetivos"),
+        ("texto", "Corpo do texto."),
+    ])
+    estado = EstadoClassificacao()
+    categorias = [classificar_paragrafo(p, estado) for p in d.paragraphs]
+    # nenhuma das linhas de cache deve virar título
+    assert categorias[1:5] == ["sumario_entrada"] * 4
+    # só os Heading 1 reais (índices 5 e 7) são titulo1
+    assert categorias[5] == "titulo1"
+    assert categorias[7] == "titulo1"
+
+
 def test_sumario_reconstroi_campo_toc(construir_docx):
     d = construir_docx([
         ("titulo_sem_numero", "SUMÁRIO"),

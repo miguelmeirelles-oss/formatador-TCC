@@ -29,8 +29,11 @@ RE_LEGENDA = re.compile(
 )
 RE_FONTE = re.compile(r"^fonte\s*:", re.IGNORECASE)
 # Linha de sumário: termina em número de página (com ou sem tab/pontos de
-# preenchimento antes), ex.: "1\tINTRODUÇÃO\t12" ou "REFERÊNCIAS  22".
-RE_LINHA_SUMARIO = re.compile(r"\d{1,4}\s*$")
+# preenchimento antes), ex.: "1\tINTRODUÇÃO\t12" ou "REFERÊNCIAS  22". As
+# páginas pré-textuais (antes da Introdução) costumam ser numeradas em
+# algarismos romanos minúsculos (ex.: "Sumário\tix", "Lista de Figuras\txii"),
+# por isso também são aceitos aqui.
+RE_LINHA_SUMARIO = re.compile(r"(\d{1,4}|[ivxlcdmIVXLCDM]{1,7})\s*$")
 
 _MAPA_ESTILO_WORD = {
     "heading 1": "titulo1",
