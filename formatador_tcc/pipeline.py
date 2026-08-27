@@ -14,6 +14,7 @@ import docx
 from .citacoes import cruzar_citacoes_e_referencias
 from .contagem import verificar_contagem_resumo
 from .formatador import formatar_documento
+from .paginacao import aplicar_numeracao_paginas
 from .referencias_check import verificar_referencias
 from .relatorio import gerar_relatorio_markdown
 from .sumario import reconstruir_sumario
@@ -36,6 +37,7 @@ def processar_docx_bytes(conteudo: bytes, *, nome_entrada: str, nome_saida: str)
 
     eventos = formatar_documento(document)
     resultado_sumario = reconstruir_sumario(document)
+    resultado_paginacao = aplicar_numeracao_paginas(document)
 
     buffer = io.BytesIO()
     document.save(buffer)
@@ -45,6 +47,7 @@ def processar_docx_bytes(conteudo: bytes, *, nome_entrada: str, nome_saida: str)
         nome_saida=nome_saida,
         eventos_formatacao=eventos,
         resultado_sumario=resultado_sumario,
+        resultado_paginacao=resultado_paginacao,
         resultado_citacoes=resultado_citacoes,
         relatorio_referencias=relatorio_referencias,
         relatorio_contagem=relatorio_contagem,

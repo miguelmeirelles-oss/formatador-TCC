@@ -1,0 +1,1176 @@
+[Texto extraído de Apendice_I_original.doc com `antiword`, porque não há
+LibreOffice funcional neste ambiente para converter o .doc legado para
+.docx. Alguns espaçamentos de justificação de linha do antiword ficaram
+estranhos (espaços duplos), mas o conteúdo textual é fiel ao original.
+Usado como fonte de regras de formatação em formatador_tcc/config.py
+sempre que o Modelo_TCC_oficial.docx não define a regra.]
+--------------------------------------------------------------------------
+
+CRÉDITOS - Template criado pelo bibliotecário Elson Heraldo  Ribeiro  Junior
+com  a  colaboração  de  Rosangela  de  Fatima  Stankowitz   Penteado   para
+formatação de trabalhos acadêmicos no âmbito da UTFPR.
+
+                      FAVOR LER ESTAS NOTAS COM ATENÇÃO
+
+Você poderá utilizar este arquivo para começar a digitar o seu  trabalho  ou
+copiá-lo aqui e  aplicar  as  normas  vigentes  de  acordo  com  os  estilos
+predefinidos. Para saber qual o estilo utilizado ou a  utilizar,  clique  na
+galeria  de  estilos  (menu:  início/estilos,  ou,  no  sistema  operacional
+Windows, por meio do atalho Alt+Ctrl+Shift+S).
+
+         NOTAS EXPLICATIVAS PARA FORMATAÇÃO DOS TRABALHOS ACADÊMICOS
+     para TCC's (Graduação), Monografias (Especialização), Dissertações
+                       (Mestrado) e Teses (Doutorado)
+
+ELEMENTOS  PRÉ-TEXTUAIS  (capa,  folha  de  rosto,   termo   de   aprovação,
+dedicatória  (opcional),  agradecimentos  (opcional),  epígrafe  (opcional),
+resumo e abstract, listas (se necessário) e sumário).
+
+NÃO é permitida a utilização do logotipo  do  CEFET/RJ  nos  elementos  pré-
+textuais (capa e folha de rosto);
+
+CAPA  (Recomenda-se  a  distribuição  uniforme  dos  elementos  relacionados
+abaixo):
+
+. Cabeçalho: (nome da Instituição,  seguido  do  nome  do  Departamento  ou
+  Coordenação e do Curso),  em  fonte  tamanho  12,  CAIXA  ALTA,  negrito,
+  centralizado e com espaçamento 1,5 cm entre linhas, na primeira linha  da
+  folha da capa;
+. Nome do autor: em fonte tamanho 12, CAIXA ALTA, negrito,  centralizado  e
+  com espaçamento 1,5 cm entre linhas;
+. Título: em fonte tamanho 14, CAIXA  ALTA,  negrito,  centralizado  e  com
+  espaçamento 1,5 cm entre linhas; Subtítulo:  (se  houver),  precedido  de
+  dois pontos (:), em CAIXA ALTA, negrito e sem ponto final;
+. Tipo do  documento:  (TRABALHO  DE  CONCLUSÃO  DE  CURSO,  MONOGRAFIA  ou
+  DISSERTAÇÃO), em fonte tamanho 12, CAIXA ALTA,  negrito,  centralizado  e
+  com espaçamento 1,5 cm entre linhas;
+. Local: (cidade da Instituição), em fonte tamanho 12, CAIXA ALTA, negrito,
+  centralizado e com espaçamento 1,5 cm entre linhas e na  penúltima  linha
+  da folha da capa (sem a sigla do estado);
+. Ano: (de entrega do trabalho sem o mês), em fonte tamanho 12, CAIXA ALTA,
+  negrito, centralizado, com espaçamento 1,5 cm entre linhas  e  na  última
+  linha da folha da capa (sem o mês).
+
+FOLHA DE ROSTO
+. Nome do autor: em fonte tamanho 12, CAIXA ALTA, negrito,  centralizado  e
+  com espaçamento 1,5 cm entre linhas
+. Título: em fonte tamanho 14, CAIXA  ALTA,  negrito,  centralizado  e  com
+  espaçamento 1,5 cm entre linhas; Subtítulo:  (se  houver),  precedido  de
+  dois pontos (:) em CAIXA ALTA, negrito e sem ponto final;
+. Natureza do trabalho: (Trabalho de  Conclusão  de  Curso,  Monografia  ou
+  Dissertação), objetivo (grau pretendido) nome da instituição  e  área  de
+  concentração, em fonte tamanho 12, sem negrito, espaçamento simples;
+.  Nome  do  orientador  e  do  co-orientador  (se  houver),  sem  negrito,
+  espaçamento simples;
+. Local: (cidade da Instituição) em CAIXA ALTA, negrito, centralizado e com
+  espaçamento 1,5 cm entre linhas e na penúltima linha da folha da capa;
+. Ano: (de entrega  do  trabalho  sem  o  mês),  em  CAIXA  ALTA,  negrito,
+  centralizado, com espaçamento 1,5 cm entre linhas e na  última  linha  da
+  folha da capa.
+
+TERMO DE APROVAÇÃO
+. Elemento obrigatório a ser fornecido pela secretaria  do  curso/programa,
+  assinado pela banca e  inserido  no  trabalho.  Deve  conter  o  nome  da
+  Direção/Coordenação/Curso, o título do trabalho, o nome do aluno, a  data
+  da defesa, a titulação e o nome dos  membros  da  banca  examinadora.  No
+  formato eletrônico, as assinaturas ou rubricas deverão ser  suprimidas  e
+  na parte inferior da folha constar a informação: "A  Folha  de  Aprovação
+  assinada encontra-se na Coordenação do Curso (ou Programa)".
+
+RESUMO
+. O resumo deve ser antecedido pela referência do próprio estudo;
+. Parágrafo único (justificado), espaçamento simples, sem recuo na primeira
+  linha;
+. Palavras-chave: de três a cinco termos, separadas entre si  por  ponto  e
+  finalizadas por ponto;
+. Recomenda-se utilizar frases curtas e não usar citações;
+. Escrever sucintamente sobre a problemática, a metodologia, os  resultados
+  e as conclusões do trabalho;
+. Usar o verbo na terceira pessoa do  singular,  com  linguagem  impessoal,
+  usando preferencialmente a voz ativa.
+
+ABSTRACT
+. Elemento obrigatório. Idem ao anterior, mas em outro idioma (recomenda-se
+  em inglês).
+
+listas (DE ILUSTRAÇÕES, DE TABELAS, DE Abreviaturas, Siglas e Acrônimos)
+. Recomenda-se a  elaboração  de  listas  específicas  para  cada  tipo  de
+  ilustração, a partir da existência de cinco elementos da  mesma  espécie,
+  alinhado a esquerda e com espaçamento simples entre linhas.
+
+sumário
+. A palavra sumário deve ser centralizada, em CAIXA ALTA, negrito;
+. Os elementos pré-textuais NÃO aparecem no sumário;
+. O texto de um documento deve  ser  dividido  em  seções,  sendo  a  seção
+  primária (1) a principal,  seguida  de  outras  divisões,  como  a  seção
+  secundária (1.1); seção terciária (1.1.1); seção  quaternária  (1.1.1.1);
+  seção quinária (1.1.1.1.1).
+
+ELEMENTOS TEXTUAIS (introdução, desenvolvimento e conclusão).
+
+INTRODUÇÃO
+. Deve constar o tema, a delimitação do  assunto,  objetivos  da  pesquisa,
+  procedimentos metodológicos (classificação inicial), embasamento  teórico
+  (principais bases sintetizadas) e estrutura do trabalho;
+. Os procedimentos metodológicos e  o  embasamento  teórico  são  tratados,
+  posteriormente, em capítulos próprios e com a profundidade necessária  ao
+  trabalho de pesquisa;
+
+DESENVOLVIMENTO
+. Composto pela revisão de literatura e divide-se em seções e subseções;
+. Cada seção ou subseção deverá ter um título apropriado ao conteúdo;
+. Para elaboração do texto, manter a forma impessoal utilizando a  terceira
+  pessoa do singular, acompanhada do pronome SE;
+. Em citações com mais de três linhas, deve-se utilizar um recuo de 4 cm da
+  margem esquerda, em parágrafo justificado e espaçamento simples;
+. Para as citações curtas, até três linhas,  que  aparecem  diretamente  no
+  texto, colocar entre aspas ("..."), precedidas ou sucedidas da  indicação
+  de autoria.
+
+CONCLUSÃO (ou CONSIDERAÇÕES FINAIS)
+. Parte final do texto, na qual se apresentam  as  conclusões  do  trabalho
+  acadêmico. Pode  ser  usada  outra  denominação  similar  que  indique  a
+  conclusão do trabalho.
+
+ELEMENTOS PÓS-TEXTUAIS  referências, glossário, apêndice(s) e anexo(s)
+
+REFERÊNCIAS -  deve  conter  os  elementos  essenciais  à  identificação  do
+  documento, de acordo com a NBR 6023.
+Atenção: Alinhamento à esquerda, autores em ordem  alfabética  e  título  em
+  destaque (negrito).
+
+Glossário (opcional) -  elaborado  em  ordem  alfabética,  é  a  relação  de
+  palavras ou expressões técnicas utilizadas  no  texto,  acompanhadas  das
+  definições. NBR 14724.
+
+Apêndice(s) (opcional) - serve para complementar a argumentação. Escrito  em
+  caixa alta sucedida por travessão e  pelo  título.  Criar  uma  folha  de
+  apresentação para cada novo elemento.
+Ex: APÊNDICE A - Leitura do arquivo XML para configuração do sistema
+
+Anexo(s)  (opcional)  -  elemento  não  elaborado  pelo   autor   serve   de
+  fundamentação. Escrito em  caixa  alto  sucedida  por  travessão  e  pelo
+  título. Criar uma folha de apresentação para cada novo elemento.
+Ex: ANEXO A - Regulamento técnico para inspeção sanitária de alimentos
+
+formatação dAS ILUSTRAÇÕES (GRÁFICOS, FIGURAS, QUADROS, ETC.)
+Identificação na parte inferior, precedida da palavra que designa o tipo  de
+  ilustração, seguida do número  de  ocorrência  no  texto,  em  algarismos
+  arábicos, com título e/ou legenda;
+. Legenda escrita em fonte tamanho 10, centralizada e em negrito;
+.  fonte  referenciada  (Autor;  data)  escrita  em   fonte   tamanho   10;
+  centralizada, e em negrito;
+. O tamanho da fonte na parte interna das ilustrações também é 10;
+
+formatação dAS TABELAS
+. Título acima da tabela, centralizada e em negrito, precedido  da  palavra
+  Tabela com seu respectivo número de ordem em algarismos arábicos;
+. O título deve ser o mais  completo  possível  indicando  objetivamente  o
+  conteúdo;
+. Inserir dois espaços de  1,5  entre  o  texto  que  antecede  e  o  texto
+  subsequente;
+. O tamanho da fonte na parte interna da tabela é 10;
+.  fonte  referenciada  (Autor;  data)  escrita  em   fonte   tamanho   10;
+  centralizada, e em negrito;
+. Cabeçalho separado por traços horizontais, sem linha de  separação  entre
+  os dados e sem fechamento lateral;
+. Para as tabelas que ocupam mais de uma folha observar a  continuidade  na
+  folha seguinte, repetindo o título e o cabeçalho e  inserindo  uma  linha
+  horizontal de fechamento no final da tabela.
+
+PAGINAÇÃO
+. Devem ser contados os elementos pré-textuais, a partir da folha de rosto,
+  mas não numerados;
+. A numeração deve ser colocada a partir da primeira folha  da  introdução,
+  em algarismos arábicos, no canto superior direito da folha;
+. Para formatar a paginação, posicionar o título  da  introdução  na  mesma
+  folha do  sumário,  inserir  uma  quebra  de  seção  na  próxima  página,
+  desabilitar a função Vincular ao Anterior e inserir o  número  de  página
+  correspondente. Para renumerar a paginação, dê um duplo clique no  número
+  da página para entrar no modo de edição, vá em  número  de   página,   em
+  seguida em Formatar números de página e em Iniciar em. Havendo anexo(s) e
+  apêndice(s), as suas folhas devem ser numeradas e  paginadas  de  maneira
+  contínua;
+
+REGRAS GERAIS DE APRESENTAÇÃO
+. Configuração das margens: deve-se usar margens esquerda e superior  de  3
+  cm; e margens direita e inferior de 2 cm; em papel formato A4  (21  cm  x
+  29,7 cm);
+. Recomenda-se o uso de fonte tipo Arial ou Times  New  Roman,  tamanho  12
+  para o texto e de tamanho 10 para citações de mais de três linhas,  notas
+  de rodapé e legendas das ilustrações e tabelas.
+. O  parágrafo  deve  aparecer  com  recuo  na  primeira  linha  de  1,5cm,
+  justificado, sem espaçamento anterior ou posterior.
+. Os elementos como: o resumo, as notas, as referências,  as  legendas  das
+  ilustrações e tabelas, a natureza do trabalho,  o  objetivo,  o  nome  da
+  instituição a que  é  submetida  e  a  área  de  concentração  devem  ser
+  digitados em espaço simples.
+. A numeração progressiva para as seções do texto  deve  ser  adotada  para
+  evidenciar a sistematização do conteúdo do trabalho;
+. Para os títulos das seções não se utilizam pontos, hífen,  travessão,  ou
+  qualquer sinal após o indicativo de seção ou de título;
+. Para as seções primárias: utiliza-se negrito e caixa alta;
+. Para as seções secundárias: somente caixa alta e sem negrito;
+. Para as seções terciárias: a primeira letra de cada palavra em  maiúscula
+  (desconsidera-se artigos e preposições);
+. Para as seções quaternárias: somente a primeira letra do título da  seção
+  em maiúscula;
+. No sumário, os títulos das seções devem aparecer exatamente iguais ao que
+  está contido no trabalho.
+
+       CENTRO FEDERAL DE EDUCAÇÃO TECNOLÓGICA CELSO SUCKOW DA FONSECA
+              digite aqui O NOME DO DEPARTAMENTO OU COORDENAÇÃO
+                         digite aqui O NOME DO CURSO
+
+
+
+                     digite aqui o nome do(s) autor(es)
+
+
+
+
+
+
+         DIGITE AQUI O TÍTULO DO TRABALHO: E O SUBTÍTULO (SE HOUVER)
+
+
+
+
+
+                       DIGITE AQUI O TIPO DO DOCUMENTO
+
+
+
+
+                    NOME DA CIDADE SEM A SIGLA DO ESTADO
+                         digite aqui o ano da defesa
+                  digite aqui o(s) nome(s) do(s) autor(es)
+
+
+
+
+
+
+
+
+
+
+
+
+ DIGITE AQUI O TÍTULO DO TRABALHO: E O SUBTÍTULO (SE HOUVER) - MANTENHA ESTE
+                        TÍTULO ALINHADO COM O DA CAPA
+
+Trabalho  de  Conclusão  de  Curso  apresentado  como  requisito  parcial  à
+obtenção do título de Bacharel em (nome do curso), do (nome do  Departamento
+/ Coordenação), do Centro Federal de Educação Tecnológica  Celso  Suckow  da
+Fonseca.
+
+Orientador: Prof. Dr. Nome Completo
+Co-orientador: (se houver) Prof. Dr. Nome Completo
+
+
+
+
+                    NOME DA CIDADE SEM A SIGLA DO ESTADO
+                         DIGITE AQUI O ANO DA DEFESA
+Folha destinada à inclusão  da  Ficha  Catalográfica  (elemento  obrigatório
+somente para teses e dissertações) a ser solicitada à Biblioteca Central  do
+CEFET/RJ e posteriormente  impressa  no  verso  da  Folha  de  Rosto  (folha
+anterior).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Espaço destinado à dedicatória  (elemento  opcional).  Folha  que  contém  o
+oferecimento do trabalho à determinada pessoa ou pessoas.
+
+Exemplo: Dedico este trabalho à minha família, pelos momentos de ausência.
+agradecimentos
+
+       Folha que  contém  manifestação  de  reconhecimento  a  pessoas  e/ou
+instituições que realmente contribuíram com o autor, devendo  ser  expressos
+de maneira  simples.  Coloca-se  no  espaço  superior  da  folha  a  palavra
+Agradecimento(s), grafada em CAIXA ALTA, em negrito e centralizada.
+       Exemplo:
+       Certamente estes parágrafos não irão atender a todas as  pessoas  que
+fizeram parte dessa importante fase de minha vida. Portanto, desde  já  peço
+desculpas àquelas que não estão presentes entre  essas  palavras,  mas  elas
+podem estar certas que fazem parte do meu pensamento e de minha gratidão.
+       Agradeço ao meu orientador Prof. Dr. Fulano, pela sabedoria  com  que
+me guiou nesta trajetória.
+       Aos meus colegas de sala.
+       A Secretaria do Curso, pela cooperação.
+       Gostaria de deixar registrado também, o meu  reconhecimento  à  minha
+família, pois acredito que sem o apoio  deles  seria  muito  difícil  vencer
+esse desafio.
+       Enfim, a todos os que por algum motivo contribuíram para a realização
+desta pesquisa.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Espaço destinado à epígrafe (elemento opcional). Nesta folha,  o  autor  usa
+uma citação, seguida de indicação  de  autoria  e  ano,  relacionada  com  a
+matéria tratada no corpo do trabalho.
+
+Exemplo: Eu denomino meu campo de Gestão do Conhecimento, mas você não  pode
+gerenciar conhecimento. Ninguém pode.  O  que  você  pode  fazer,  o  que  a
+empresa pode fazer é  gerenciar  o  ambiente  que  otimize  o  conhecimento.
+(PRUSAK, Laurence, 1997)
+Resumo
+
+SOBRENOME, Prenome do Autor do Trabalho. Título do trabalho:  subtítulo  (se
+houver).  Ano de defesa. Número total de folhas. Trabalho  de  Conclusão  de
+Curso - Centro Federal de Educação Tecnológica Celso Suckow da Fonseca.  Rio
+de Janeiro. Cidade, ano de defesa.
+
+Elemento obrigatório, constituído de uma  sequência  de  frases  concisas  e
+objetivas, fornecendo uma visão rápida e clara  do  conteúdo  do  estudo.  O
+texto deverá conter no máximo 500 palavras e ser antecedido pela  referência
+do estudo. Também, não deve conter citações. O resumo deve ser  redigido  em
+parágrafo único, espaçamento simples e seguido das palavras  representativas
+do conteúdo do estudo, isto é, palavras-chave, em número de  três  a  cinco,
+separadas entre si por ponto e finalizadas também por ponto.  Usar  o  verbo
+na terceira pessoa do singular, com linguagem impessoal  (pronome  SE),  bem
+como fazer uso, preferencialmente, da voz ativa.
+
+Palavras-chave: Palavra 1. Palavra 2.  Palavra  3.  Palavra  4.  Palavra  5.
+(separados entre si por ponto)
+
+
+
+
+
+
+abstract
+
+SOBRENOME, Prenome do Autor do Trabalho. Title of the working: subtitle (if
+any). Ano de defesa. Número total de folhas. Trabalho de Conclusão de Curso
+- Federal Center of Technological Education - Rio de Janeiro. city, ano de
+defesa.
+
+Elemento obrigatório em tese, dissertação, monografia e TCC. É a  versão  do
+resumo em português para o idioma  de  divulgação  internacional.  Deve  ser
+antecedido pela referência do estudo. Deve aparecer  em  folha  distinta  do
+resumo em língua  portuguesa  e  seguido  das  palavras  representativas  do
+conteúdo do estudo, isto é, das palavras-chave. Sugere-se  a  elaboração  do
+resumo (Abstract) e das palavras-chave (Keywords) em  inglês;  para  resumos
+em outras línguas, que não o inglês, consultar o  departamento  /  curso  de
+origem.
+
+Keywords: Keyword 1. Keyword 2. Keyword 3. Keyword 4. Keyword 5.  (separados
+entre si por ponto)
+
+
+
+
+
+
+LISTA DE ILUSTRAÇÕES
+
+Elemento   opcional.    São   ilustrações:   figuras,   quadros,   gráficos,
+fotografias,   retratos,   desenhos,   gravuras,    imagens,    fluxogramas,
+organogramas, esquemas, mapas, plantas.
+
+Recomenda-se a elaboração de listas específicas e separadas para  cada  tipo
+de ilustração a partir da existência de cinco elementos  da  mesma  espécie.
+Para  uma  lista  de  ilustrações,  organizá-la  por  ordem  alfabética  dos
+elementos.
+
+
+
+Para atualizar a lista, clicar com o botão direito do mouse sobre o  sumário
+em Atualizar campo e  selecionar  uma  opção  disponível  de  acordo  com  a
+necessidade.
+
+
+
+Figura 1 - As dimensões curriculares de pré-escolar     19
+
+Fotografia 1 - Imagem de divulgação do informativo eletrônico do CEFET/RJ
+19
+
+Gráfico 1 - Estatística de Empréstimos em Janeiro de 2009    18
+
+Quadro 1 - Áreas de Desenvolvimento de Competências     18
+
+
+
+LISTA DE TABELAS
+
+Elemento opcional. É a relação  das  tabelas  contidas  no  trabalho.  Estas
+devem vir em lista própria, de acordo com a ordem apresentada no texto,  com
+cada item designado por  seu  nome  específico,  acompanhado  do  respectivo
+número da página.
+
+
+
+Para atualizar a lista, clicar com o botão direito do mouse sobre o  sumário
+em Atualizar campo e  selecionar  uma  opção  disponível  de  acordo  com  a
+necessidade.
+
+
+
+
+Tabela 1 - Desempenho dos alunos na prova de conhecimentos específicos   20
+Tabela 2 - Situação da Educação Brasileira em 2002 - Ensino Médio  20
+
+
+
+LISTA DE ABREVIATURAS, SIGLAS e acrônimos
+
+Elemento  opcional  que  consiste  na  relação,  em  ordem  alfabética,  das
+abreviaturas (parte da palavra  representando  o  todo),  siglas  (forma  de
+abreviatura formada pelas letras  iniciais  de  palavras  de  expressões)  e
+acrônimos (palavras formadas  por  letras  ou  sílabas  iniciais  de  outras
+expressões, formando uma  palavra  pronunciável).  Siglas  e  acrônimos  são
+utilizados no texto, seguidos das  palavras  ou  expressões  correspondentes
+por extenso.
+
+Recomenda-se a elaboração de listas específicas  e  separadas  a  partir  da
+existência de cinco elementos da mesma espécie.
+
+
+
+LISTA DE ABREVIATURAS
+
+|a.C.      |Antes de Cristo                                             |
+|Cód. Civ. |Código Civil                                                |
+|CO        |Conhecimento Organizacional                                 |
+
+
+LISTA DE SIGLAS
+
+|ABIPTI   |Associação Brasileira das Instituições de Pesquisa          |
+|         |Tecnológica                                                 |
+|BSC      |Balanced Scorecard                                          |
+|CH       |Capital Humano                                              |
+
+
+LISTA DE acrônimos
+
+|CAE      |Computer Aided Engineering                                  |
+|NASA     |National Aeronautics and Space Administration               |
+|OTAN     |Organização do Tratado do Atlântico Norte                   |
+
+
+
+sumário
+
+O sumário deve ser colocado como  último  elemento  pré-textual.  O  sumário
+deve ser apresentado conforme o que segue:
+
+    . os elementos pré-textuais não aparecem no sumário;
+
+    . a ordem dos elementos do sumário deve ser conforme os indicativos  das
+      seções que compõem o trabalho;
+
+    . o texto de um documento deve ser dividido em  seções,  sendo  a  seção
+      primária a principal (1), seguida de outras  divisões,  como  a  seção
+      secundária  (1.1);  seção   terciária   (1.1.1);   seção   quaternária
+      (1.1.1.1).  Deve-se  limitar  a  numeração  progressiva  até  a  seção
+      quinária (1.1.1.1.1), inclusive;
+
+    . o espaçamento entre títulos no sumário deve ser simples.
+
+Para atualizar as listas e o sumário, clique com o botão  direito  do  mouse
+sobre o índice em Atualizar campo e selecione Atualizar apenas o  número  de
+página ou Atualizar o índice inteiro.
+
+
+1     introdução 13
+2     Seção primária (em CAIXA ALTA e em NEGRITO) 15
+2.1   Seção secundária (em caixa alta e sem negrito)    15
+2.1.1 Seção Terciária (Com as Iniciais Maiúsculas)      15
+2.1.1.1     Seção quaternária (Primeira letra do título Maiúscula) 15
+2.1.1.1.1   Seção quinária (Primeira letra do título maiúscula e em
+itálico)    15
+3     Desenvolvimento  16
+4     CITAÇÕES   22
+5     Conclusão  23
+REFERÊNCIAS 24
+APÊNDICE A -     Questionário de Pesquisa    25
+APÊNDICE B -     Roteiro da Entrevista 27
+anexo A -   Direitos autorais - Lei nº 9.610, de 19 de fevereiro de 1998.
+Disposições preliminares    29
+anexo B -   Capa do livro: Normas para Elaboração de Trabalhos     32
+
+
+
+
+
+introdução
+
+       Parte inicial do texto, na qual devem constar o tema e a  delimitação
+do assunto tratado, objetivos da pesquisa  e  outros  elementos  necessários
+para situar o tema do  trabalho,  tais  como:  justificativa,  procedimentos
+metodológicos  (classificação  inicial),  embasamento  teórico   (principais
+bases sintetizadas) e estrutura do trabalho, tratados de forma sucinta.
+       Salienta-se  que  os  procedimentos  metodológicos  e  o  embasamento
+teórico  são  tratados,  posteriormente,  em  capítulos  próprios  e  com  a
+profundidade necessária ao trabalho de pesquisa.
+       Após o início de uma seção, recomenda-se a inserção de um  texto  ou,
+no mínimo,  uma  nota  explicativa  sobre  a  seção  iniciada.  Evitar,  por
+exemplo:
+       1 INTRODUÇÃO
+       1.1 CONTEXTUALIZAÇÃO
+
+
+ESPAÇAMENTO
+
+       . Os resumos, as notas, as referências, as legendas das ilustrações e
+         tabelas e a natureza do trabalho  devem  ser  digitadas  em  espaço
+         simples;
+       . Todo o texto deve ser formatado com espaço de 1,5 cm  entre  linhas
+         (sem espaçamento antes/depois);
+       . As citações com mais de três linhas devem ser em espaço  simples  e
+         com recuo de 4 cm da margem esquerda;
+       . As referências, ao final do trabalho, devem ser separadas entre  si
+         por dois espaços simples, e na mesma referência o espaço é simples;
+
+
+       . Os títulos das seções secundárias devem ser separados do texto  que
+         os precede por dois espaços de 1,5 cm;
+       . As seções primárias devem iniciar em páginas distintas.
+
+PAGINAÇÃO
+
+
+       Todas as folhas do trabalho, a partir da folha de  rosto,  devem  ser
+contadas sequencialmente, mas não numeradas. A numeração deve  ser  colocada
+a partir da primeira folha da  parte  textual  (Introdução),  em  algarismos
+arábicos,  no  canto  superior  direito  da  folha.   Havendo   anexo(s)   e
+apêndice(s), as suas folhas devem  ser  numeradas  e  paginadas  de  maneira
+contínua.
+
+
+EXEMPLOS DE UTILIZAÇÃO DE NUMERAÇÃO PROGRESSIVA
+
+       Nos títulos com indicativo numérico não se  utilizam  pontos,  hífen,
+travessão, ou qualquer sinal após o indicativo de  seção  ou  de  título.  A
+numeração progressiva  para  as  seções  do  texto  deve  ser  adotada  para
+evidenciar  a  sistematização   do   conteúdo   do   trabalho.   Destacam-se
+gradativamente os títulos das seções, utilizando-se os recursos de  negrito,
+caixa alta ou versal e itálico. No sumário, os  títulos  devem  aparecer  de
+forma idêntica ao texto.
+       Veja os exemplos na folha seguinte:
+
+
+
+Seção primária (em CAIXA ALTA e em NEGRITO)
+
+       As seções primárias devem iniciar SEMPRE em páginas distintas.
+
+
+
+
+
+       1 Seção secundária (em caixa alta e sem negrito)
+
+       Os títulos das seções secundárias devem ser separados do texto que os
+precede por 2 (dois) espaços de 1,5 cm.
+
+
+
+       1 Seção Terciária (Com as Iniciais Maiúsculas)
+
+       Os títulos das seções terciárias devem ser separados do texto que  os
+precede por 1 (um) espaços de 1,5 cm.
+
+
+
+       1 Seção quaternária (Primeira letra do título Maiúscula)
+
+       Os títulos das seções quaternárias  também  devem  ser  separados  do
+texto que os precede por 1 (um) espaços de 1,5 cm.
+
+
+
+       1 Seção quinária (Primeira letra do título maiúscula e em itálico)
+
+       Os títulos das seções quinárias também devem ser separados  do  texto
+que os precede por 1 (um) espaços de 1,5 cm.
+
+
+
+Desenvolvimento
+
+       Parte principal do  trabalho,  que  contém  a  exposição  ordenada  e
+pormenorizada do assunto. É composta de revisão de literatura,  dividida  em
+seções e subseções, material e  método(s)  e/ou  metodologia  e  resultados,
+agora descritos detalhadamente. Cada seção ou subseção deverá ter um  título
+apropriado ao conteúdo.
+       Deve-se utilizar sempre a terceira pessoa do singular  na  elaboração
+do texto, mantendo-se a forma impessoal com o uso do pronome SE.[1]
+
+
+REGRAS GERAIS DE APRESENTAÇÃO
+
+
+       Constituem-se como padrão para apresentação de trabalhos acadêmicos:
+
+
+          . tamanho da fonte: Arial (sem serifa) ou Times  New  Roman  (com
+            serifa),  tamanho  12,   quando   da   utilização   de   fontes
+            proprietárias (sistema Windows). Deve-se utilizar apenas um dos
+            tipos escolhidos em todo o  trabalho.  Recomenda-se  o  uso  de
+            fonte tamanho 12 para o texto e de tamanho 10 para citações  de
+            mais de três linhas, notas de rodapé e legendas das ilustrações
+            e tabelas. Utilizar fontes e tamanhos correspondentes quando do
+            uso de software livre. Em citações com  mais  de  três  linhas,
+            deve-se utilizar um recuo de 4 cm da margem esquerda;
+          . formato do título: o título do trabalho, na capa e na folha  de
+            rosto, deve aparecer em CAIXA  ALTA,  negrito,  centralizado  e
+            usando fonte Arial ou Times  New  Roman,  tamanho  14.  Havendo
+            subtítulo, este deve ser precedido  por  dois  pontos,  escrito
+            também em CAIXA ALTA,  negrito,  centralizado  e  usando  fonte
+            Arial ou Times New Roman, tamanho 14 e sem ponto final;
+          . parágrafo: deve aparecer com recuo na primeira linha de 1,5 cm,
+            justificado, sem espaçamento anterior ou posterior.
+
+
+MARGEM
+
+
+          . Deve-se usar margens esquerda e superior de  3  cm;  e  margens
+            direita e inferior de 2 cm;
+          . na folha de rosto e  na  folha  de  aprovação,  a  natureza  do
+            trabalho, o objetivo, o nome da instituição a que é submetida e
+            a área de concentração devem ser alinhados do  meio  da  mancha
+            (espelho/área ocupada pelo texto) para  a  margem  direita,  em
+            espaço simples.
+
+
+ILUSTRAÇÕES
+
+
+       São ilustrações: figuras, quadros, gráficos,  fotografias,  retratos,
+desenhos, gravuras, imagens,  fluxogramas,  organogramas,  esquemas,  mapas,
+plantas e diferenciam-se das tabelas. As ilustrações devem ser  inseridas  o
+mais próximo possível do texto a que se refere.
+       Qualquer que seja o tipo de ilustração, sua identificação aparece  na
+parte inferior, precedida da palavra designativa, seguida de seu  número  de
+ordem de ocorrência no texto, em algarismos arábicos, do  respectivo  título
+e/ou legenda. A fonte deve ser tamanho 10 e  em  negrito.  Após  a  legenda,
+deve-se citar a fonte de  onde  foi  retirada  a  ilustração,  precedida  da
+palavra "Fonte" (Autor, data), bem como,  deve-se  referenciá-la,  de  forma
+completa, na seção Referências.
+       * Para inserir legendas nas ilustrações e tabelas:
+       1) Na guia Referências, no grupo Legendas, clique em Inserir Legenda.
+       2) Na lista Rótulo, selecione o rótulo que descreva melhor o  objeto.
+Se a lista não contiver o rótulo correto, clique em Novo  Rótulo,  digite  o
+novo rótulo na caixa Rótulo e clique em OK.
+       3) Digite o texto, incluindo a  pontuação,  que  você  deseja  exibir
+depois do rótulo e clique Enter para utilizar a formatação  apropriada  para
+a Fonte.
+
+
+Modelo  de  formatação  de  gráfico  (Estilo  utilizado  é  "Parágrafo  para
+Ilustrações"):
+
+
+                                    [pic]
+    Gráfico 1 - Estatística relativa ao item "Você sentiu falta de alguma
+ atividade que deveria fazer parte das atividades desenvolvidas no estágio?"
+                          Fonte: DEPES/SESUP (2017)
+
+Modelo  de  formatação  de  quadro  (em  geral,  trazem  apenas  informações
+textuais) e diferenciam-se das tabelas:
+
+
+|Áreas de Desenvolvimento   |Descrição                                 |
+|1. Competências sobre      |Conhecimento nos processos de trabalho    |
+|processos                  |                                          |
+|2. Competências técnicas   |Conhecimento técnico nas tarefas a serem  |
+|                           |desempenhadas e tecnologias empregadas    |
+|                           |nestas tarefas                            |
+|3. Competências sobre a    |Saber organizar os fluxos de trabalho     |
+|organização                |                                          |
+|4. Competências de serviço |Aliar as competências técnicas com o      |
+|                           |impacto que estas ações terão para o      |
+|                           |cliente consumidor                        |
+|5. Competências sociais    |Atitudes que sustentam o comportamento do |
+|                           |indivíduo: saber comunicar-se e           |
+|                           |responsabilizar-se pelos seus atos.       |
+
+
+             Quadro 1 - Áreas de Desenvolvimento de Competências
+             Fonte: Zarifian (1999) apud Fleury e Fleury (2004).
+
+Modelo  de  formatação  de  figura  (Estilo  utilizado  é  "Parágrafo   para
+Ilustrações").
+
+
+                                    [pic]
+             Figura 1 - As dimensões curriculares de pré-escolar
+                    Fonte: Centro Social de Azurva (2009)
+
+       Insira o seu texto.
+
+
+Modelo de formatação de fotografia:
+
+
+                                    [pic]
+  Fotografia 1 - Imagem de divulgação do informativo eletrônico do CEFET/RJ
+                          Fonte: Portal do CEFET/RJ
+
+       Insira o seu texto.
+TABELAS
+
+
+       Uma tabela deve apresentar dados  numéricos  de  modo  resumido  e  é
+utilizada principalmente para a apresentação de comparações. Deve-se  seguir
+tal padrão em todo  o  trabalho,  constando  também  na  lista  de  tabelas,
+separada da lista de ilustrações. Os  quadros  não  devem  ser  chamados  de
+tabelas, uma vez que se diferenciam  destas  por  apresentarem  as  laterais
+fechadas e o conteúdo não numérico.
+
+
+       Exemplo de tabela
+   Tabela 1 - Desempenho dos alunos na prova de conhecimentos específicos
+|Média         |CEFET                       |BRASIL                      |
+|Curso         |concluintes   |ingressantes  |concluintes   |ingressantes  |
+|Matemática    |27,8          |22,5          |27,1          |22,4          |
+|Letras        |32,3          |31,5          |30,9          |26,5          |
+|Geografia     |38,4          |34,2          |34,6          |29,5          |
+|Ciências      |26,4          |23,6          |26,6          |21,9          |
+|Biológicas    |              |              |              |              |
+
+
+     Fonte: Relatório dos cursos avaliados em 2005 - INEP/SINAES (2006)
+
+
+       Exemplo de tabela que ocupa mais de uma folha
+
+      Tabela 2 - Situação da Educação Brasileira em 2002 - Ensino Médio
+                                                                  (continua)
+|             |Taxa de repetência |Taxa de evasão no|Taxa de          |
+|             |no                 |Ensino Médio (%) |analfabetismo da |
+|             |Ensino Médio (%)   |                 |população de 15 a|
+|             |                   |                 |17               |
+|Sul          |...                |...              |...              |
+|Paraná       |19,3               |8                |1,4              |
+|Rio Grande do|23,3               |7,7              |1,1              |
+|Sul          |                   |                 |                 |
+|Santa        |20,6               |9,5              |1,4              |
+|Catarina     |                   |                 |                 |
+      Tabela 2 - Situação da Educação Brasileira em 2002 - Ensino Médio
+                                                                 (conclusão)
+|             |Taxa de repetência |Taxa de evasão no|Taxa de          |
+|             |no                 |Ensino Médio (%) |analfabetismo da |
+|             |Ensino Médio (%)   |                 |população de 15 a|
+|             |                   |                 |17               |
+|Sudeste      |...                |...              |...              |
+|Espírito     |17,4               |5,2              |2,2              |
+|Santo        |                   |                 |                 |
+|Minas Gerais |14,2               |7,2              |2,1              |
+|Rio de       |22,4               |6,5              |1,3              |
+|Janeiro      |                   |                 |                 |
+|São Paulo    |11,5               |7,6              |0,8              |
+
+
+ Fontes: IBGE: PNAD 1999 / Contagem populacional 1996; MEC/SEEC/INEP: Censo
+                              Educacional 1999.
+
+
+
+CITAÇÕES
+
+       É fundamental nesta  etapa  a  ética  e  a  honestidade  intelectual,
+atribuindo autoria a quem, realmente, contribuiu para o  desenvolvimento  do
+estudo em questão.  Neste  processo  usam-se  as  citações,  definidas  como
+"menção de uma informação extraída de outra  fonte"  (ASSOCIAÇÃO  BRASILEIRA
+DE NORMAS TÉCNICAS, 2002, p. 1)[2] ou ainda (ABNT, 2002, p. 1).
+       A transcrição, literal ou não, seguida da referência adequada, torna-
+se  uma  citação  como  classificada  por  normas.   Entretanto,   a   mesma
+transcrição ou cópia, sem atender os ditames da norma, torna-se  um  plágio.
+O plágio é passível de restrições legais  e  penais.  A  Lei  nº  9.610,  de
+19/02/1998, regula os direitos  autorais  no  Brasil,  prevendo  as  sanções
+legais pertinentes; já o Código Penal, no seu Artigo 184, aponta as  sanções
+penais.
+       Todos os autores e obras, consultados e efetivamente citados, deverão
+constar na lista final de referências.
+       As citações curtas diretas, aquelas com  até  três  linhas,  aparecem
+diretamente  no  texto,  destacadas  entre  aspas  ("..."),  precedidas   ou
+sucedidas da indicação de autoria.  Exemplo:  O  autor  lembra,  contudo,  a
+análise  precursora  de  Leonard-Barton   (1998)   sobre   alguns   aspectos
+limitantes das competências, ou aptidões, essenciais, que as transformam  em
+"limitações estratégicas" (LEONARD-BARTON, 1998, p. 48).
+       Exemplo de citação direta longa (mais de 3 linhas)
+
+                  O contexto capacitante não  significa  necessariamente  um
+                  espaço físico. Em vez disso, combina  aspectos  de  espaço
+                  físico (como o projeto de um escritório  ou  operações  de
+                  negócios dispersas), espaço  virtual  (e-mail,  Intranets,
+                  teleconferências) e espaço mental (experiências, idéias  e
+                  emoções compartilhadas). Acima de tudo,  trata-se  de  uma
+                  rede de interações, determinada  pela  solicitude  e  pela
+                  confiança dos participantes. (KROGH; ICHIJO; NONAKA, 2001,
+                  p. 66).
+
+
+Conclusão
+
+       Parte final do texto, na qual se apresentam as conclusões do trabalho
+acadêmico, usualmente denominada Considerações Finais. Pode ser usada  outra
+denominação similar que indique a conclusão do trabalho.
+
+
+
+REFERÊNCIAS
+
+       As referências constituem-se de elementos descritivos que permitem  a
+identificação e a localização do documento original. O estilo  utilizado  é:
+"Formatação  das  Referências".  Recomenda-se  fortemente  o  uso  de  algum
+gerente  automático  de  referências  bibliográficas,  como  o  presente  no
+próprio Microsoft Word, ou o Zotero (https://www.zotero.org/).
+
+
+ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. NBR 6023: informação e
+documentação: referências: elaboração. Rio de Janeiro, 2002. (modelo de
+referência com autoria coletiva)
+
+ANDRADE, M. M. Competências requeridas pelos gestores de Instituições de
+ensino superior privadas: um estudo em Curitiba e região Metropolitana.
+2005. 173 f. Dissertação (Mestrado) - Programa de Pós-Graduação em
+Tecnologia, Universidade Tecnológica Federal do Paraná. Curitiba, 2005.
+(modelo de referência de dissertação).
+
+BARROS, A. J. S; LEHFELD, N. A. S. Fundamentos de metodologia: um guia para
+a iniciação científica. 2. ed. São Paulo: Makron, 2000. (modelo de
+referência de livro com subtítulo e edição)
+
+CÓDIGO de Catalogação Anglo-Americano. 2. ed. São Paulo: FEBAB, 1983-1985.
+(modelo de referência sem autoria - entrada pelo título da obra).
+
+MONTEIRO, S. Breve espaço entre cor e sombra: o romance da maturidade
+literária de Cristóvão Tezza. Revista de Letras, Curitiba (PR), v. 13, n.
+11, p. 183-200, dez. 2009. (modelo de referência de artigo de periódico).
+
+RENAUX, D. P. B.; et al. Gestão do conhecimento de um laboratório de
+pesquisa: uma abordagem prática. In: SIMPÓSIO INTERNACIONAL DE GESTÃO DO
+CONHECIMENTO.  4., 2001, Curitiba. Anais... Curitiba: PUC-PR, 2001. p. 195-
+208. (modelo de referência de trabalho publicado em evento).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Questionário de Pesquisa
+
+     (esta é a página de apresentação - em seguida, incluir o apêndice)
+    CENTRALIZAR O TÍTULO VERTICALMENTE E ALINHAR COM OS DEMAIS ELEMENTOS
+
+
+
+Ministério da Educação
+Centro Federal de Educação Tecnológica Celso Suckow da Fonseca
+Diretoria de Ensino
+Departamento Educação Superior
+Comissão de Normas de Projeto Final
+
+APLICAÇÃO DO QUESTIONÁRIO PARA TRABALHOS ACADÊMICOS
+
+
+|1. Você tem conhecimento do trabalho que está sendo realizado no     |
+|CEFET/RJ para padronizar a elaboração de trabalhos de Projeto Final  |
+|nas graduações?                                                      |
+|        |EM      |G      |PG       |P        |TA     |TOTAL         |
+|Sim     |        |       |         |         |       |              |
+|Não     |        |       |         |         |       |              |
+
+
+|2. Se a resposta da pergunta anterior foi afirmativa, de que maneira |
+|tomou conhecimento?                                                  |
+|                  |EM     |G      |PG     |P      |TA     |TOTAL   |
+|Pela Internet, na |       |       |       |       |       |        |
+|página da         |       |       |       |       |       |        |
+|instituição       |       |       |       |       |       |        |
+|Pelo jornal da    |       |       |       |       |       |        |
+|instituição       |       |       |       |       |       |        |
+|Por outra maneira |       |       |       |       |       |        |
+
+
+|3. Na realização de trabalhos acadêmicos (relatório, TCC,            |
+|dissertação, tese, etc.) você costuma consultar normas que norteiam a|
+|elaboração dos mesmos?                                               |
+|        |EM       |G        |PG       |P         |TA       |TOTAL    |
+|Sempre  |         |         |         |          |         |         |
+|Nunca   |         |         |         |          |         |         |
+|Às vezes|         |         |         |          |         |         |
+
+
+|4. Se utiliza normas para elaboração de trabalhos acadêmicos, quais  |
+|costuma consultar?                                                   |
+|                      |EM    |G     |PG    |P     |TA    |TOTAL     |
+|ABNT                  |      |      |      |      |      |          |
+|CEFET/RJ              |      |      |      |      |      |          |
+|A que seu orientador  |      |      |      |      |      |          |
+|passou                |      |      |      |      |      |          |
+|A elaborada pela      |      |      |      |      |      |          |
+|biblioteca e          |      |      |      |      |      |          |
+|professores de nosso  |      |      |      |      |      |          |
+|Campus                |      |      |      |      |      |          |
+|De outra instituição  |      |      |      |      |      |          |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            Roteiro da Entrevista
+
+
+
+
+
+
+
+Roteiro de Entrevista
+
+1- Identificação Pessoal:
+
+Nome:
+D/N:
+Nacionalidade:
+Sexo:
+Idade:
+
+Outras pessoas que moram na casa:
+
+
+Informante:
+2- Encaminhado por:
+Motivo da solicitação:
+
+
+3 - Antecedentes Pessoais:
+3.1- Concepção
+Quanto tempo após o casamento?
+Foi desejada?
+Sexo esperado?
+Abortos anteriores (espontâneos ou provocados e época)
+Observações:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Direitos autorais - Lei nº 9.610, de 19 de fevereiro de 1998. Disposições
+                                preliminares
+
+
+|[pic]        |Presidência da República                                |
+|             |Casa Civil                                              |
+|             |Subchefia para Assuntos Jurídicos                       |
+
+
+                  LEI Nº 9.610, DE 19 DE FEVEREIRO DE 1998.
+|Mensagem de veto                |Altera, atualiza e consolida a       |
+|                                |legislação sobre direitos autorais e |
+|                                |dá outras providências.              |
+
+
+        O PRESIDENTE DA REPÚBLICA Faço saber que o Congresso Nacional
+decreta e eu sanciono a seguinte Lei:
+                                  Título I
+                          Disposições Preliminares
+        Art. 1º Esta Lei regula os direitos autorais, entendendo-se sob
+esta denominação os direitos de autor e os que lhes são conexos.
+        Art. 2º Os estrangeiros domiciliados no exterior gozarão da
+proteção assegurada nos acordos, convenções e tratados em vigor no Brasil.
+        Parágrafo único. Aplica-se o disposto nesta Lei aos nacionais ou
+pessoas domiciliadas em país que assegure aos brasileiros ou pessoas
+domiciliadas no Brasil a reciprocidade na proteção aos direitos autorais ou
+equivalentes.
+        Art. 3º Os direitos autorais reputam-se, para os efeitos legais,
+bens móveis.
+        Art. 4º Interpretam-se restritivamente os negócios jurídicos sobre
+os direitos autorais.
+        Art. 5º Para os efeitos desta Lei, considera-se:
+        I - publicação - o oferecimento de obra literária, artística ou
+científica ao conhecimento do público, com o consentimento do autor, ou de
+qualquer outro titular de direito de autor, por qualquer forma ou processo;
+        II - transmissão ou emissão - a difusão de sons ou de sons e
+imagens, por meio de ondas radioelétricas; sinais de satélite; fio, cabo ou
+outro condutor; meios óticos ou qualquer outro processo eletromagnético;
+        III - retransmissão - a emissão simultânea da transmissão de uma
+empresa por outra;
+        IV - distribuição - a colocação à disposição do público do original
+ou cópia de obras literárias, artísticas ou científicas, interpretações ou
+execuções fixadas e fonogramas, mediante a venda, locação ou qualquer outra
+forma de transferência de propriedade ou posse;
+        V - comunicação ao público - ato mediante o qual a obra é colocada
+ao alcance do público, por qualquer meio ou procedimento e que não consista
+na distribuição de exemplares;
+        VI - reprodução - a cópia de um ou vários exemplares de uma obra
+literária, artística ou científica ou de um fonograma, de qualquer forma
+tangível, incluindo qualquer armazenamento permanente ou temporário por
+meios eletrônicos ou qualquer outro meio de fixação que venha a ser
+desenvolvido;
+        VII - contrafação - a reprodução não autorizada;
+        VIII - obra:
+        a) em co-autoria - quando é criada em comum, por dois ou mais
+autores;
+        b) anônima - quando não se indica o nome do autor, por sua vontade
+ou por ser desconhecido;
+        c) pseudônima - quando o autor se oculta sob nome suposto;
+        d) inédita - a que não haja sido objeto de publicação;
+        e) póstuma - a que se publique após a morte do autor;
+        f) originária - a criação primígena;
+        g) derivada - a que, constituindo criação intelectual nova, resulta
+da transformação de obra originária;
+        h) coletiva - a criada por iniciativa, organização e
+responsabilidade de uma pessoa física ou jurídica, que a publica sob seu
+nome ou marca e que é constituída pela participação de diferentes autores,
+cujas contribuições se fundem numa criação autônoma;
+        i) audiovisual - a que resulta da fixação de imagens com ou sem
+som, que tenha a finalidade de criar, por meio de sua reprodução, a
+impressão de movimento, independentemente dos processos de sua captação, do
+suporte usado inicial ou posteriormente para fixá-lo, bem como dos meios
+utilizados para sua veiculação;
+        IX - fonograma - toda fixação de sons de uma execução ou
+interpretação ou de outros sons, ou de uma representação de sons que não
+seja uma fixação incluída em uma obra audiovisual;
+        X - editor - a pessoa física ou jurídica à qual se atribui o
+direito exclusivo de reprodução da obra e o dever de divulgá-la, nos
+limites previstos no contrato de edição;
+        XI - produtor - a pessoa física ou jurídica que toma a iniciativa e
+tem a responsabilidade econômica da primeira fixação do fonograma ou da
+obra audiovisual, qualquer que seja a natureza do suporte utilizado;
+        XII - radiodifusão - a transmissão sem fio, inclusive por
+satélites, de sons ou imagens e sons ou das representações desses, para
+recepção ao público e a transmissão de sinais codificados, quando os meios
+de decodificação sejam oferecidos ao público pelo organismo de radiodifusão
+ou com seu consentimento;
+        XIII - artistas intérpretes ou executantes - todos os atores,
+cantores, músicos, bailarinos ou outras pessoas que representem um papel,
+cantem, recitem, declamem, interpretem ou executem em qualquer forma obras
+literárias ou artísticas ou expressões do folclore.
+        Art. 6º Não serão de domínio da União, dos Estados, do Distrito
+Federal ou dos Municípios as obras por eles simplesmente subvencionadas.
+
+
+-----------------------
+[1] Utilizar o termo: cabe-se ressaltar, no lugar de: ressaltamos.
+[2] Dica: para autores entre parênteses, sempre em CAIXA ALTA.
+
+-----------------------
+Espaço destinado a elaboração da ficha  catalografica  sob  responsabilidade
+exclusiva da Biblioteca Central do CEFET/RJ.
+
+

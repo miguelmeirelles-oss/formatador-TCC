@@ -1,23 +1,32 @@
 # Formatador de TCC (ABNT)
 
-Ferramenta para formatar automaticamente o `.docx` do TCC de um aluno
-segundo as normas ABNT usadas pela instituição, com base no
-`templates/Modelo_TCC_oficial.docx` (documento oficial fornecido). A
+Ferramenta para formatar automaticamente o `.docx` do TCC de um aluno de
+Engenharia de Alimentos do CEFET/RJ segundo as normas da instituição, com
+base em duas fontes oficiais: o `templates/Modelo_TCC_oficial.docx` (fonte
+principal -- usado sempre que ele define a regra) e o **Apêndice I**
+("Normas para Elaboração e Defesa de Projeto Final") como complemento,
+usado só quando o modelo oficial não cobre algo. Nenhuma regra usada aqui
+foi inventada -- todas vêm de um desses dois documentos, ou de comentários
+deixados pela própria autora do modelo oficial dentro do arquivo. A
 ferramenta **nunca reescreve o texto do aluno** -- ela só toca em
 propriedades de formatação (fonte, tamanho, negrito/itálico, alinhamento,
-espaçamento, recuo, margens) e gera um relatório apontando o que foi
-corrigido automaticamente e o que ainda precisa de revisão manual.
+espaçamento, recuo, margens, quebras de página, numeração) e gera um
+relatório apontando o que foi corrigido automaticamente e o que ainda
+precisa de revisão manual.
 
 ## O que ela faz
 
 1. **Normaliza a formatação** de cada parágrafo (fonte Times New Roman 12,
    espaçamento 1,5, recuo de primeira linha 1,25cm, margens 3/2/3/2cm,
-   títulos em negrito/maiúsculas conforme o nível, legendas de
-   figura/quadro/tabela, citações diretas longas com recuo de 4cm etc.),
-   classificando cada parágrafo pelo estilo do Word que o aluno usou (se
-   partiu do modelo oficial) ou por heurísticas de texto (título numerado
-   digitado manualmente, palavras-chave como RESUMO/ABSTRACT/REFERÊNCIAS).
-   Ver `formatador_tcc/classify.py` e `formatador_tcc/config.py`.
+   legendas de figura/quadro/tabela, citações diretas longas com recuo de
+   4cm etc.), classificando cada parágrafo pelo estilo do Word que o aluno
+   usou (se partiu do modelo oficial) ou por heurísticas de texto (título
+   numerado digitado manualmente, palavras-chave como
+   RESUMO/ABSTRACT/REFERÊNCIAS). Suporta os 5 níveis de título do Apêndice I
+   (seção primária a quinária), cada um com seu padrão de negrito/maiúsculas/
+   itálico, e insere quebra de página antes de cada seção primária ("As
+   seções primárias devem iniciar SEMPRE em páginas distintas" -- Apêndice
+   I). Ver `formatador_tcc/classify.py` e `formatador_tcc/config.py`.
 
 2. **Reconstrói o SUMÁRIO** como um campo TOC nativo do Word (`{ TOC }`),
    em vez de tentar calcular números de página manualmente -- o próprio
@@ -25,18 +34,28 @@ corrigido automaticamente e o que ainda precisa de revisão manual.
    configurado para atualizar campos automaticamente). Ver
    `formatador_tcc/sumario.py`.
 
-3. **Confere a contagem de palavras** do Resumo e do Abstract contra a
+3. **Numera as páginas** no canto superior direito a partir da Introdução,
+   como manda o Apêndice I ("Todas as folhas ... devem ser contadas
+   sequencialmente, mas não numeradas [até a Introdução] ... no canto
+   superior direito da folha"). Usa um campo de fórmula nativo do Word
+   (`{ =PAGE-2 }`, onde o "-2" desconta Capa e Ficha Catalográfica da
+   contagem, conforme o próprio modelo oficial detalha em um comentário) --
+   pelo mesmo motivo do Sumário, é o Word quem recalcula o número certo ao
+   abrir o arquivo, não há como calcular isso sem um motor de paginação de
+   verdade. Ver `formatador_tcc/paginacao.py`.
+
+4. **Confere a contagem de palavras** do Resumo e do Abstract contra a
    regra explícita do modelo oficial (mínimo 150, máximo 500 palavras).
    Ver `formatador_tcc/contagem.py`.
 
-4. **Cruza citações do texto com a lista de Referências** (NBR 10520):
+5. **Cruza citações do texto com a lista de Referências** (NBR 10520):
    aponta citações no corpo do texto sem entrada correspondente nas
    Referências, e referências da lista que nunca foram citadas. Reconhece
    citação parentética (`(SILVA, 2020)`), narrativa (`Silva (2020)`),
    múltiplos autores, "et al." e "apud" (nesse caso só exige referência da
    fonte efetivamente consultada). Ver `formatador_tcc/citacoes.py`.
 
-5. **Confere a formatação de cada referência** (NBR 6023): autor em
+6. **Confere a formatação de cada referência** (NBR 6023): autor em
    maiúsculas seguido de vírgula ou ponto, presença de ano, pontuação
    final, alinhamento à esquerda, recuo zero, espaçamento simples, e
    consistência do destaque tipográfico do título (negrito OU itálico, não
@@ -64,12 +83,13 @@ python -m formatador_tcc entrada.docx --saida saida.docx --relatorio relatorio.m
 
 | Corrigido automaticamente | Reportado para revisão manual |
 |---|---|
-| Fonte, tamanho, negrito/maiúsculas dos títulos | Autor de referência fora do padrão (ex.: minúsculas) |
+| Fonte, tamanho, negrito/maiúsculas/itálico dos 5 níveis de título | Autor de referência fora do padrão (ex.: minúsculas) |
 | Alinhamento, espaçamento, recuo de parágrafo | Ano ausente ou pontuação final ausente numa referência |
 | Margens e tamanho de página | Destaque de título inconsistente entre referências |
-| Entradas antigas do sumário → campo TOC nativo | Citação sem referência correspondente |
-| Recuo de citação direta longa (heurística) | Referência nunca citada no texto |
-| | Resumo/Abstract fora do intervalo de 150–500 palavras |
+| Quebra de página antes de cada seção primária | Citação sem referência correspondente |
+| Entradas antigas do sumário → campo TOC nativo | Referência nunca citada no texto |
+| Numeração de página (canto superior direito, a partir da Introdução) | Resumo/Abstract fora do intervalo de 150–500 palavras |
+| Recuo de citação direta longa (heurística) | |
 
 O motivo de não corrigir a segunda coluna automaticamente é que fazer isso
 exigiria **decidir por conta própria** o que o aluno quis dizer (ex.:
@@ -78,6 +98,15 @@ o que violaria a regra de não alterar o conteúdo escrito pelo aluno.
 
 ## Limitações conhecidas
 
+- O documento final ainda pode conter comentários do Word herdados do
+  modelo oficial (aquelas anotações da autora com orientações, tipo
+  "Esta é a primeira página numerada..."), se o aluno não os removeu ao
+  preencher o próprio modelo. A ferramenta não tenta apagá-los
+  automaticamente -- mexer no XML de comentários tem risco real de corromper
+  o arquivo, e não há como testar isso de forma confiável neste ambiente
+  (sem Word/LibreOffice funcional para validar visualmente). Se algum
+  comentário sobrar no arquivo final, é rápido apagar manualmente no Word
+  (Revisão → Excluir → Excluir Todos os Comentários no Documento).
 - A detecção de citações é heurística (baseada em expressões regulares).
   Ela cobre os formatos mais comuns da NBR 10520, mas pode não reconhecer
   formatos incomuns ou citações mal formatadas pelo próprio aluno -- por
@@ -175,13 +204,27 @@ pip install -r requirements-dev.txt
 python -m pytest tests/ -v
 ```
 
+## Fontes das regras usadas
+
+- `templates/Modelo_TCC_oficial.docx` -- fonte principal, tem prioridade
+  sempre que define a regra (estilos, margens, contagem de palavras do
+  resumo etc.), incluindo comentários do Word deixados pela própria autora
+  do modelo (ex.: a explicação de como numerar a página da Introdução).
+- `templates/Apendice_I_normas_formatacao.txt` -- texto extraído do
+  Apêndice I ("Normas para Elaboração e Defesa de Projeto Final", CEFET/RJ),
+  usado só para preencher lacunas que o modelo oficial não cobre (ex.:
+  numeração de página, seções quaternária/quinária). O arquivo original é
+  um `.doc` binário antigo (Word 97-2003); o texto foi extraído com
+  `antiword` porque não há LibreOffice funcional neste ambiente para
+  converter para `.docx`.
+
 ## Próximos passos sugeridos
 
-- Hospedar o app web (`webapp/`) num servidor real (institucional ou
-  Render/Railway) para os alunos usarem sem precisar instalar nada.
 - Ampliar `referencias_check.py` com validações específicas por tipo de
   referência (livro, artigo, site, norma, legislação), hoje tratadas de
   forma genérica -- assim que houver mais detalhes das regras da
   instituição para cada tipo.
 - Se a instituição definir uma faixa de páginas/palavras para o trabalho
   completo, adicionar essa checagem em `contagem.py`.
+- Remoção segura de comentários do Word herdados do modelo (ver
+  "Limitações conhecidas").

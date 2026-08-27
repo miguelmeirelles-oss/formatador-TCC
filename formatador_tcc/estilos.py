@@ -9,6 +9,8 @@ texto em caixa alta sem alterar a string armazenada no documento.
 from __future__ import annotations
 
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
 from .config import EstiloParagrafo
@@ -46,8 +48,54 @@ def aplicar_estilo(
                 run.font.bold = estilo.negrito
             if estilo.italico is not None:
                 run.font.italic = estilo.italico
-        if forcar_maiusculas and estilo.maiusculas:
-            run.font.all_caps = True
+        if forcar_maiusculas:
+            run.font.all_caps = estilo.maiusculas
+
+
+def aplicar_negrito_prefixo(paragraph, prefixo: str) -> None:
+    """Deixa em negrito só o prefixo literal do parágrafo (ex.: "Fonte:"),
+    sem alterar o texto nem o negrito do restante da linha -- é o padrão
+    observado nos exemplos reais do modelo oficial ("**Fonte:** Autor,
+    ano.", só a palavra "Fonte:" em negrito).
+    """
+    texto = paragraph.text
+    if not texto.lower().startswith(prefixo.lower()):
+        return
+
+    restante = len(prefixo)
+    for run in list(paragraph.runs):
+        if restante <= 0:
+            break
+        n = len(run.text)
+        if n == 0:
+            continue
+        if n <= restante:
+            run.font.bold = True
+            restante -= n
+            continue
+        # o prefixo termina no meio deste run: separa em dois runs.
+        texto_run = run.text
+        parte_prefixo = texto_run[:restante]
+        parte_resto = texto_run[restante:]
+        novo = OxmlElement("w:r")
+        rpr_original = run._r.find(qn("w:rPr"))
+        if rpr_original is not None:
+            novo.append(_clonar_elemento(rpr_original))
+        t = OxmlElement("w:t")
+        t.set(qn("xml:space"), "preserve")
+        t.text = parte_prefixo
+        novo.append(t)
+        run._r.addprevious(novo)
+        novo_run = type(run)(novo, run._parent)
+        novo_run.font.bold = True
+
+        run.text = parte_resto
+        restante = 0
+
+
+def _clonar_elemento(el):
+    import copy
+    return copy.deepcopy(el)
 
 
 def aplicar_configuracao_pagina(document, page_setup) -> None:

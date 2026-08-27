@@ -15,24 +15,29 @@ from docx.shared import Pt
 
 from . import config
 from .classify import EstadoClassificacao, classificar_paragrafo
-from .estilos import aplicar_configuracao_pagina, aplicar_estilo
+from .estilos import aplicar_configuracao_pagina, aplicar_estilo, aplicar_negrito_prefixo
 
 _CORPO_SEM_RECUO = replace(config.CORPO_TEXTO, recuo_primeira_linha_cm=0.0)
 
 # categoria -> (estilo, forcar_negrito_italico, forcar_maiusculas, estilo_word)
 _REGRAS = {
     "titulo1": (config.TITULO_SECAO_PRIMARIA, True, True, "Heading 1"),
-    "titulo2": (config.TITULO_SECAO_SECUNDARIA, True, False, "Heading 2"),
+    "titulo2": (config.TITULO_SECAO_SECUNDARIA, True, True, "Heading 2"),
     "titulo3": (config.TITULO_SECAO_TERCIARIA, True, False, "Heading 3"),
+    "titulo4": (config.TITULO_SECAO_QUATERNARIA, True, False, "Heading 4"),
+    "titulo5": (config.TITULO_SECAO_QUINARIA, True, False, "Heading 5"),
     "titulo_sem_numero": (config.TITULO_SEM_NUMERO, True, True, "Título de Seção"),
     "legenda": (config.LEGENDA, True, False, None),
-    "fonte_ilustracao": (config.FONTE_ILUSTRACAO, True, False, None),
+    "fonte_ilustracao": (config.FONTE_ILUSTRACAO, False, False, None),
     "citacao_longa": (config.CITACAO_LONGA, False, False, None),
     "referencia": (config.REFERENCIA, False, False, None),
     "resumo_corpo": (config.CORPO_TEXTO, False, False, None),
     "corpo": (config.CORPO_TEXTO, False, False, None),
     "corpo_sem_recuo": (_CORPO_SEM_RECUO, False, False, None),
 }
+
+# Apêndice I: "As seções primárias devem iniciar SEMPRE em páginas distintas."
+_CATEGORIAS_COM_QUEBRA_DE_PAGINA = {"titulo1"}
 
 
 @dataclass
@@ -89,6 +94,10 @@ def formatar_documento(document) -> list[EventoFormatacao]:
             forcar_negrito_italico=forcar_negrito_italico,
             forcar_maiusculas=forcar_maiusculas,
         )
+        paragraph.paragraph_format.page_break_before = categoria in _CATEGORIAS_COM_QUEBRA_DE_PAGINA
+
+        if categoria == "fonte_ilustracao":
+            aplicar_negrito_prefixo(paragraph, config.PREFIXO_FONTE_NEGRITO)
 
         trecho = paragraph.text.strip()[:60]
         eventos.append(EventoFormatacao(indice=indice, categoria=categoria, trecho=trecho))

@@ -6,6 +6,7 @@ from collections import Counter
 from .citacoes import ResultadoCruzamento
 from .contagem import RelatorioContagem
 from .formatador import EventoFormatacao
+from .paginacao import ResultadoPaginacao
 from .referencias_check import RelatorioReferencias
 from .sumario import ResultadoSumario
 
@@ -23,9 +24,11 @@ def _bloco_formatacao(eventos: list[EventoFormatacao]) -> list[str]:
                        "não foi alterado). Por categoria:")
         linhas.append("")
         rotulos = {
-            "titulo1": "Títulos de capítulo (nível 1)",
-            "titulo2": "Subtítulos (nível 2)",
-            "titulo3": "Subtítulos (nível 3)",
+            "titulo1": "Títulos de capítulo (seção primária)",
+            "titulo2": "Subtítulos (seção secundária)",
+            "titulo3": "Subtítulos (seção terciária)",
+            "titulo4": "Subtítulos (seção quaternária)",
+            "titulo5": "Subtítulos (seção quinária)",
             "titulo_sem_numero": "Títulos sem indicativo numérico",
             "legenda": "Legendas de figura/quadro/tabela",
             "fonte_ilustracao": "Linhas de fonte de ilustração",
@@ -61,8 +64,30 @@ def _bloco_sumario(resultado: ResultadoSumario) -> list[str]:
     return linhas
 
 
+def _bloco_paginacao(resultado: ResultadoPaginacao) -> list[str]:
+    linhas = ["", "## 3. Numeração de página", ""]
+    if not resultado.aplicada:
+        linhas.append(
+            "Não foi possível localizar o início da Introdução -- a numeração de página não "
+            "foi aplicada. Verifique se o documento tem um título de capítulo (\"1 "
+            "INTRODUÇÃO\" ou equivalente com estilo Heading 1)."
+        )
+        return linhas
+    linhas.append(
+        "Número de página inserido no canto superior direito, a partir da Introdução (as "
+        "páginas anteriores não são numeradas, mas contam para a numeração, exceto Capa e "
+        "Ficha Catalográfica -- por isso o número já sai descontado em 2, conforme o "
+        "Apêndice I). Referências, apêndices e anexos continuam a mesma numeração."
+    )
+    linhas.append(
+        "Assim como o sumário, esse número é recalculado automaticamente pelo Word ao abrir "
+        "o arquivo."
+    )
+    return linhas
+
+
 def _bloco_contagem(rel: RelatorioContagem) -> list[str]:
-    linhas = ["", "## 3. Contagem de palavras (Resumo/Abstract)", ""]
+    linhas = ["", "## 4. Contagem de palavras (Resumo/Abstract)", ""]
     for secao in (rel.resumo, rel.abstract):
         marca = "✅" if secao.dentro_do_limite else "⚠️"
         linhas.append(f"- {marca} {secao.mensagem}")
@@ -70,7 +95,7 @@ def _bloco_contagem(rel: RelatorioContagem) -> list[str]:
 
 
 def _bloco_citacoes(res: ResultadoCruzamento) -> list[str]:
-    linhas = ["", "## 4. Cruzamento entre citações e referências", ""]
+    linhas = ["", "## 5. Cruzamento entre citações e referências", ""]
     linhas.append(f"- {len(res.citacoes)} citação(ões) identificada(s) no corpo do texto.")
     linhas.append(f"- {len(res.referencias)} entrada(s) na lista de Referências.")
     linhas.append("")
@@ -106,7 +131,7 @@ def _bloco_citacoes(res: ResultadoCruzamento) -> list[str]:
 
 
 def _bloco_referencias(rel: RelatorioReferencias) -> list[str]:
-    linhas = ["", "## 5. Formatação das Referências (NBR 6023)", ""]
+    linhas = ["", "## 6. Formatação das Referências (NBR 6023)", ""]
     linhas.append(f"{rel.total_entradas} entrada(s) verificada(s).")
     linhas.append("")
 
@@ -137,6 +162,7 @@ def gerar_relatorio_markdown(
     nome_saida: str,
     eventos_formatacao: list[EventoFormatacao],
     resultado_sumario: ResultadoSumario,
+    resultado_paginacao: ResultadoPaginacao,
     resultado_citacoes: ResultadoCruzamento,
     relatorio_referencias: RelatorioReferencias,
     relatorio_contagem: RelatorioContagem,
@@ -153,6 +179,7 @@ def gerar_relatorio_markdown(
     ]
     linhas += _bloco_formatacao(eventos_formatacao)
     linhas += _bloco_sumario(resultado_sumario)
+    linhas += _bloco_paginacao(resultado_paginacao)
     linhas += _bloco_contagem(relatorio_contagem)
     linhas += _bloco_citacoes(resultado_citacoes)
     linhas += _bloco_referencias(relatorio_referencias)

@@ -22,7 +22,7 @@ from .texto import normalizar
 from .config import SECOES_SEM_NUMERO, SECOES_POS_TEXTUAIS_TITULO1
 
 RE_TITULO_NUMERADO = re.compile(
-    r"^(?P<prefixo>\d{1,2}(?:\.\d{1,2}){0,3})\.?\s+[A-ZÀ-Ú0-9]"
+    r"^(?P<prefixo>\d{1,2}(?:\.\d{1,2}){0,4})\.?\s+[A-ZÀ-Ú0-9]"
 )
 RE_LEGENDA = re.compile(
     r"^(figura|quadro|tabela|gr[aá]fico|equa[cç][aã]o)\s*\d+", re.IGNORECASE
@@ -42,6 +42,12 @@ _MAPA_ESTILO_WORD = {
     "heading 3": "titulo3",
     "título 3": "titulo3",
     "titulo 3": "titulo3",
+    "heading 4": "titulo4",
+    "título 4": "titulo4",
+    "titulo 4": "titulo4",
+    "heading 5": "titulo5",
+    "título 5": "titulo5",
+    "titulo 5": "titulo5",
     "título de seção": "titulo_sem_numero",
     "titulo de secao": "titulo_sem_numero",
     "title": "titulo_sem_numero",
@@ -110,8 +116,11 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
 
     # 2) REFERÊNCIAS/APÊNDICE/ANEXO/GLOSSÁRIO: no modelo oficial usam o mesmo
     #    estilo "Heading 1" dos capítulos (entram no Sumário como titulo1).
-    if norm in SECOES_POS_TEXTUAIS_TITULO1 or any(
-        norm.startswith(prefixo) for prefixo in SECOES_POS_TEXTUAIS_TITULO1
+    #    Fora da zona de SUMÁRIO -- senão uma entrada antiga em cache do
+    #    sumário (ex.: "REFERÊNCIAS\t22") seria confundida com o título real.
+    if estado.zona != ZONA_SUMARIO and (
+        norm in SECOES_POS_TEXTUAIS_TITULO1
+        or any(norm.startswith(prefixo) for prefixo in SECOES_POS_TEXTUAIS_TITULO1)
     ):
         estado.zona = ZONA_REFERENCIAS if norm.startswith("REFERENCIAS") else ZONA_POS_TEXTUAL
         estado.logo_apos_titulo = True
@@ -120,16 +129,18 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
     # 2) Estilo do Word explícito tem prioridade sobre heurística textual,
     #    exceto para reclassificar a zona corrente.
     estilo_mapeado = _estilo_word(paragraph)
-    if estilo_mapeado in ("titulo1", "titulo2", "titulo3"):
+    if estilo_mapeado in ("titulo1", "titulo2", "titulo3", "titulo4", "titulo5"):
         estado.zona = ZONA_CORPO
         estado.logo_apos_titulo = True
         return estilo_mapeado
 
     # 3) Título numerado digitado manualmente (sem estilo Heading aplicado).
+    #    Apêndice I limita a numeração progressiva até a seção quinária
+    #    (1.1.1.1.1), inclusive.
     m = RE_TITULO_NUMERADO.match(texto)
     if m and estado.zona in (ZONA_PRE_TEXTUAL, ZONA_CORPO):
         prefixo = m.group("prefixo")
-        nivel = min(prefixo.count("."), 2) + 1  # 1, 2 ou 3
+        nivel = min(prefixo.count("."), 4) + 1  # 1 a 5
         estado.zona = ZONA_CORPO
         estado.logo_apos_titulo = True
         return f"titulo{nivel}"

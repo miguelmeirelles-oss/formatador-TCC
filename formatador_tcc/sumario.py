@@ -52,7 +52,7 @@ def _forcar_atualizacao_de_campos_ao_abrir(document) -> None:
 
 
 def _construir_campo_toc(paragraph) -> None:
-    """Substitui o conteúdo do parágrafo por um campo `{ TOC \\o "1-3" \\h \\z \\u }`."""
+    """Substitui o conteúdo do parágrafo por um campo `{ TOC \\o "1-5" \\h \\z \\u }`."""
     p = paragraph._p
     for child in list(p.findall(qn("w:r"))):
         p.remove(child)
@@ -73,7 +73,7 @@ def _construir_campo_toc(paragraph) -> None:
     r2 = novo_run()
     instr = OxmlElement("w:instrText")
     instr.set(qn("xml:space"), "preserve")
-    instr.text = ' TOC \\o "1-3" \\h \\z \\u '
+    instr.text = ' TOC \\o "1-5" \\h \\z \\u '
     r2.append(instr)
 
     r3 = novo_run()

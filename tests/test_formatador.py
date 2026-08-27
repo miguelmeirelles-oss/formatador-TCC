@@ -52,6 +52,84 @@ def test_paragrafo_corpo_fica_justificado_com_recuo(construir_docx):
     assert abs(recuo.cm - 1.25) < 0.05
 
 
+def test_titulo_ate_quinto_nivel_reconhecido(construir_docx):
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("texto", "1 INTRODUÇÃO"),
+        ("texto", "1.1 Contextualização"),
+        ("texto", "1.1.1 Um Subtema"),
+        ("texto", "1.1.1.1 Detalhe do subtema"),
+        ("texto", "1.1.1.1.1 Último nível permitido"),
+    ])
+    estado = EstadoClassificacao()
+    categorias = [classificar_paragrafo(p, estado) for p in d.paragraphs]
+    assert categorias[1:6] == ["titulo1", "titulo2", "titulo3", "titulo4", "titulo5"]
+
+
+def test_secao_secundaria_fica_caixa_alta_sem_negrito(construir_docx):
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("heading2", "Contextualização"),
+    ])
+    formatar_documento(d)
+    p = d.paragraphs[2]
+    for run in p.runs:
+        assert run.font.bold is False
+        assert run.font.all_caps is True
+
+
+def test_quebra_de_pagina_so_em_titulo1(construir_docx):
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("heading2", "Contextualização"),
+        ("texto", "Um parágrafo de corpo qualquer."),
+    ])
+    formatar_documento(d)
+    assert d.paragraphs[1].paragraph_format.page_break_before is True
+    assert d.paragraphs[2].paragraph_format.page_break_before is False
+    assert d.paragraphs[3].paragraph_format.page_break_before is False
+
+
+def test_fonte_ilustracao_negrito_apenas_no_prefixo(construir_docx):
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("texto", "Figura 1 - Um gráfico qualquer"),
+        ("texto", "Fonte: Silva e Souza, 2020."),
+    ])
+    formatar_documento(d)
+    p = d.paragraphs[3]
+    assert p.text == "Fonte: Silva e Souza, 2020."
+    primeiro_run = p.runs[0]
+    assert primeiro_run.text == "Fonte:"
+    assert primeiro_run.font.bold is True
+    assert any(r.font.bold is not True for r in p.runs[1:])
+
+
+def test_toc_cache_de_referencias_nao_e_confundido_com_titulo(construir_docx):
+    """Regressão: entradas antigas do sumário como 'REFERÊNCIAS\\t22' não
+    podem ser classificadas como titulo1 -- senão sobrevivem à reconstrução
+    do sumário como um "REFERÊNCIAS" duplicado e mal formatado."""
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("texto", "1\tINTRODUÇÃO\t12"),
+        ("texto", "REFERÊNCIAS\t22"),
+        ("texto", "APÊNDICE A -\t24"),
+        ("heading1", "INTRODUÇÃO"),
+        ("texto", "Corpo do texto."),
+        ("heading1", "REFERÊNCIAS"),
+        ("texto", "SILVA, João. Um livro. São Paulo: Editora, 2020."),
+    ])
+    formatar_documento(d)
+    resultado = reconstruir_sumario(d)
+    assert resultado.entradas_removidas == 3
+
+    textos = [p.text for p in d.paragraphs]
+    assert textos.count("REFERÊNCIAS") == 1
+
+
 def test_sumario_reconstroi_campo_toc(construir_docx):
     d = construir_docx([
         ("titulo_sem_numero", "SUMÁRIO"),
