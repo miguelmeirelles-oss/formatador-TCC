@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
-from .classify import EstadoClassificacao, classificar_paragrafo
+from .classify import EstadoClassificacao, classificar_paragrafo, MARCADOR_CAMPO_SUMARIO
 from .texto import normalizar
 
 
@@ -40,6 +40,47 @@ def _localizar_bloco_sumario(document):
         elif indice_titulo is not None and categoria != "sumario_entrada" and indices_entradas:
             break
     return indice_titulo, indices_entradas
+
+
+# Blocos de conteúdo automático do Word (inseridos via Inserir -> Sumário /
+# Índice de Ilustrações) que ficam "invisíveis" para document.paragraphs,
+# porque moram dentro de um <w:sdt> (bloco de conteúdo), não como <w:p>
+# soltos no corpo do documento. Se não forem removidos junto com as
+# entradas antigas em texto puro, sobra um sumário nativo do Word inteiro
+# (com seus próprios hyperlinks e marcadores internos) logo abaixo do novo
+# campo TOC -- na prática isso já produziu um .docx que o Word se recusa a
+# abrir ("problema com o conteúdo").
+_GALERIAS_SUMARIO_NATIVO = {"Table of Contents", "Table of Figures"}
+
+
+def _eh_sdt_de_sumario_nativo(elemento) -> bool:
+    if elemento.tag != qn("w:sdt"):
+        return False
+    galeria = elemento.find(f"{qn('w:sdtPr')}/{qn('w:docPartObj')}/{qn('w:docPartGallery')}")
+    if galeria is None:
+        return False
+    return galeria.get(qn("w:val")) in _GALERIAS_SUMARIO_NATIVO
+
+
+def _remover_sumario_nativo_do_word(document, indice_titulo: int, indices_entradas: list[int]) -> int:
+    """Remove qualquer sumário/índice nativo do Word (bloco de conteúdo
+    "Sumário" ou "Índice de Ilustrações" inserido via Inserir -> Sumário)
+    que esteja logo após o título SUMÁRIO -- percorre os irmãos no XML
+    porque esses blocos não aparecem em document.paragraphs."""
+    paragrafos = document.paragraphs
+    titulo_p = paragrafos[indice_titulo]._p
+    elementos_de_entradas = {paragrafos[i]._p for i in indices_entradas}
+
+    removidos = 0
+    for irmao in list(titulo_p.itersiblings()):
+        if _eh_sdt_de_sumario_nativo(irmao):
+            irmao.getparent().remove(irmao)
+            removidos += 1
+            continue
+        if irmao.tag == qn("w:p") and irmao in elementos_de_entradas:
+            continue
+        break
+    return removidos
 
 
 def _forcar_atualizacao_de_campos_ao_abrir(document) -> None:
@@ -83,7 +124,7 @@ def _construir_campo_toc(paragraph) -> None:
 
     r4 = novo_run()
     t = OxmlElement("w:t")
-    t.text = "Sumário gerado automaticamente -- clique com o botão direito e escolha “Atualizar campo” (ou F9) após abrir no Word."
+    t.text = f"{MARCADOR_CAMPO_SUMARIO} -- clique com o botão direito e escolha “Atualizar campo” (ou F9) após abrir no Word."
     r4.append(t)
 
     r5 = novo_run()
@@ -96,6 +137,11 @@ def reconstruir_sumario(document) -> ResultadoSumario:
     indice_titulo, indices_entradas = _localizar_bloco_sumario(document)
     if indice_titulo is None:
         return ResultadoSumario(encontrado=False)
+
+    # precisa rodar ANTES de inserir o novo campo -- percorre os irmãos do
+    # título no XML original, e o parágrafo novo entraria no meio do
+    # caminho se já tivesse sido inserido.
+    _remover_sumario_nativo_do_word(document, indice_titulo, indices_entradas)
 
     paragrafos = document.paragraphs
     titulo = paragrafos[indice_titulo]

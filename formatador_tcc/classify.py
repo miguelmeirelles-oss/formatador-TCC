@@ -35,6 +35,14 @@ RE_FONTE = re.compile(r"^fonte\s*:", re.IGNORECASE)
 # por isso também são aceitos aqui.
 RE_LINHA_SUMARIO = re.compile(r"(\d{1,4}|[ivxlcdmIVXLCDM]{1,7})\s*$")
 
+# Texto do parágrafo-placeholder que sumario.py insere no lugar do campo TOC
+# (ver _construir_campo_toc). Precisa ser reconhecido aqui como "ainda é uma
+# entrada de sumário" -- senão, ao reprocessar um documento já formatado por
+# esta ferramenta, o placeholder (que não termina em número de página) faria
+# a zona de SUMÁRIO ser encerrada cedo demais, e um novo campo TOC seria
+# inserido ao lado do antigo em vez de substituí-lo.
+MARCADOR_CAMPO_SUMARIO = "Sumário gerado automaticamente"
+
 _MAPA_ESTILO_WORD = {
     "heading 1": "titulo1",
     "título 1": "titulo1",
@@ -211,8 +219,9 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
         return "resumo_corpo"
 
     if estado.zona == ZONA_SUMARIO:
-        if RE_LINHA_SUMARIO.search(texto):
-            # ainda parece uma entrada de sumário (termina em nº de página)
+        if RE_LINHA_SUMARIO.search(texto) or texto.startswith(MARCADOR_CAMPO_SUMARIO):
+            # ainda parece uma entrada de sumário (termina em nº de página,
+            # ou é o placeholder do campo TOC inserido numa passada anterior)
             # -- será removida e substituída pelo campo TOC nativo.
             estado.logo_apos_titulo = False
             return "sumario_entrada"
