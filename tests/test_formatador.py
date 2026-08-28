@@ -111,6 +111,94 @@ def test_quebra_de_pagina_tambem_em_titulo_sem_numero(construir_docx):
     assert d.paragraphs[3].paragraph_format.page_break_before is True
 
 
+def test_paragrafos_vazios_antes_de_titulo_sao_removidos(construir_docx):
+    """Regressão real: um TCC empilhava vários parágrafos em branco entre o
+    fim do Resumo e o título ABSTRACT (truque antigo do aluno para empurrar
+    o Abstract para a página seguinte, sem quebra de página de verdade).
+    Como a ferramenta agora insere sua própria quebra automática antes de
+    ABSTRACT, esses parágrafos em branco sobrando criavam uma página
+    inteira em branco entre os dois. Removê-los não fere o texto porque
+    eles não têm nenhum conteúdo."""
+    d = construir_docx([
+        ("titulo_sem_numero", "RESUMO"),
+        ("texto", "Texto do resumo."),
+        ("texto", ""),
+        ("texto", ""),
+        ("texto", ""),
+        ("titulo_sem_numero", "ABSTRACT"),
+        ("texto", "Abstract text."),
+    ])
+    formatar_documento(d)
+
+    textos = [p.text for p in d.paragraphs]
+    assert textos == ["RESUMO", "Texto do resumo.", "ABSTRACT", "Abstract text."]
+    idx_abstract = textos.index("ABSTRACT")
+    assert d.paragraphs[idx_abstract].paragraph_format.page_break_before is True
+
+
+def test_paragrafos_vazios_fora_de_zona_pretextual_nao_sao_removidos(construir_docx):
+    """Parágrafos em branco que não estão logo antes de um título com
+    quebra automática (ex.: espaçamento normal no meio do corpo do texto)
+    continuam intocados -- a limpeza só vale para o caso específico do
+    "empurrão" para a página de um título."""
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("texto", "Primeiro parágrafo."),
+        ("texto", ""),
+        ("texto", ""),
+        ("texto", "Segundo parágrafo, depois de linhas em branco no meio do corpo."),
+    ])
+    formatar_documento(d)
+
+    textos = [p.text for p in d.paragraphs]
+    assert textos == [
+        "SUMÁRIO", "INTRODUÇÃO", "Primeiro parágrafo.", "", "",
+        "Segundo parágrafo, depois de linhas em branco no meio do corpo.",
+    ]
+
+
+def test_ficha_catalografica_ganha_quebra_de_pagina(construir_docx):
+    """A folha da Ficha Catalográfica é um elemento pré-textual obrigatório
+    que deve começar em página própria -- diferente do título do trabalho
+    ou nome do autor (texto livre do aluno, sem padrão confiável), o texto
+    dessa folha é sempre um aviso fixo mencionando "Ficha Catalográfica",
+    então dá pra reconhecer com segurança."""
+    d = construir_docx([
+        ("texto", "Capa (texto livre)."),
+        ("texto", "Folha destinada à inclusão da Ficha Catalográfica (elemento obrigatório)."),
+    ])
+    formatar_documento(d)
+    assert d.paragraphs[1].paragraph_format.page_break_before is True
+
+
+def test_quebra_manual_entre_capa_e_contracapa_e_preservada(construir_docx):
+    """Regressão: capa/contracapa/ficha catalográfica não têm nenhum
+    padrão de texto que a ferramenta possa reconhecer -- então, se o aluno
+    já colocou uma quebra de página manual ali (a única forma de garantir
+    que cada um comece em página própria), a ferramenta não deve apagá-la
+    (isso deixaria elementos pré-textuais inteiros grudados, sem o aluno
+    ter como corrigir nem reprocessando o arquivo)."""
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+
+    d = construir_docx([
+        ("texto", "Capa (texto livre)."),
+        ("texto", ""),
+    ])
+    br = OxmlElement("w:br")
+    br.set(qn("w:type"), "page")
+    d.paragraphs[1].add_run()._element.append(br)
+
+    formatar_documento(d)
+
+    tem_quebra = any(
+        b.get(qn("w:type")) == "page"
+        for p in d.paragraphs for r in p.runs for b in r._element.findall(qn("w:br"))
+    )
+    assert tem_quebra is True
+
+
 def test_fonte_ilustracao_negrito_apenas_no_prefixo(construir_docx):
     d = construir_docx([
         ("titulo_sem_numero", "SUMÁRIO"),
@@ -251,6 +339,40 @@ def test_tabela_tem_fonte_normalizada(construir_docx):
     assert celula_run.font.size.pt == 10.0
 
 
+def test_fonte_e_normalizada_dentro_de_hyperlink(construir_docx):
+    """Regressão real: uma Lista de Tabelas com referência cruzada
+    automática (Inserir > Referência Cruzada, "inserir como hyperlink")
+    tinha os runs dentro de <w:hyperlink> -- paragraph.runs do python-docx
+    só enxerga <w:r> soltos direto no parágrafo, então esse texto nunca
+    recebia nenhuma normalização de fonte, mesmo depois de "formatado"."""
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+    ])
+    p = d.add_paragraph()
+    hyperlink = OxmlElement("w:hyperlink")
+    r = OxmlElement("w:r")
+    rPr = OxmlElement("w:rPr")
+    rFonts = OxmlElement("w:rFonts")
+    rFonts.set(qn("w:ascii"), "Comic Sans MS")
+    rPr.append(rFonts)
+    r.append(rPr)
+    t = OxmlElement("w:t")
+    t.text = "Capa (texto livre com link)"
+    r.append(t)
+    hyperlink.append(r)
+    p._p.append(hyperlink)
+
+    formatar_documento(d)
+
+    run_no_hyperlink = p._p.findall(f".//{qn('w:hyperlink')}/{qn('w:r')}")[0]
+    rFonts_final = run_no_hyperlink.find(f"{qn('w:rPr')}/{qn('w:rFonts')}")
+    assert rFonts_final.get(qn("w:ascii")) == "Times New Roman"
+
+
 def test_legenda_com_estilo_de_titulo_perde_o_estilo_heading(construir_docx):
     """Regressão: não basta classificar corretamente como "legenda" -- se o
     parágrafo continuar com o estilo Word 'Heading 5', o campo de Sumário
@@ -297,4 +419,9 @@ def test_documento_oficial_end_to_end():
     assert resultado_sumario.encontrado is True
 
     textos_finais = [p.text for p in d.paragraphs if "Sumário gerado automaticamente" not in p.text]
-    assert textos_finais == textos_esperados
+    # parágrafos em branco redundantes logo antes de um título com quebra de
+    # página automática podem ser removidos (ver formatador.py) -- não
+    # carregam texto, então isso não fere a garantia de conteúdo preservado;
+    # o que importa aqui é que nenhum parágrafo COM TEXTO foi criado,
+    # removido ou reordenado.
+    assert [t for t in textos_finais if t.strip()] == [t for t in textos_esperados if t.strip()]

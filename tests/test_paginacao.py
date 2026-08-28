@@ -64,7 +64,7 @@ def test_campo_de_pagina_tem_formula_com_offset_correto():
 
     header = d.sections[3].header
     xml = header._element.xml
-    assert "=PAGE-2" in xml
+    assert " PAGE " in xml and " - 2 " in xml and xml.count('fldCharType="begin"') == 2
     assert 'w:jc w:val="right"' in xml
 
 
@@ -79,7 +79,7 @@ def test_nao_duplica_campo_se_ja_houver_conteudo_no_cabecalho(construir_docx):
 
     header = d.sections[3].header
     assert len(header.paragraphs) == 1
-    assert "=PAGE-2" in header._element.xml
+    assert " PAGE " in header._element.xml and " - 2 " in header._element.xml
 
 
 def test_documento_de_secao_unica_ganha_quebra_de_secao_na_introducao():
@@ -100,7 +100,7 @@ def test_documento_de_secao_unica_ganha_quebra_de_secao_na_introducao():
     secoes = d.sections
     assert "".join(p.text for p in secoes[0].header.paragraphs) == ""
     assert secoes[1].header.is_linked_to_previous is False
-    assert "=PAGE-2" in secoes[1].header._element.xml
+    assert " PAGE " in secoes[1].header._element.xml and " - 2 " in secoes[1].header._element.xml
 
     # o texto continua intacto, nenhum parágrafo foi criado/removido
     textos = [p.text for p in d.paragraphs]
@@ -127,7 +127,48 @@ def test_limpa_campo_de_pagina_deixado_em_secao_pretextual_por_execucao_anterior
     # a seção pré-textual (agora seção 0, separada da Introdução) não deve
     # mais ter o "2" órfão da execução anterior
     assert "".join(p.text for p in secoes[0].header.paragraphs) == ""
-    assert "=PAGE-2" in secoes[1].header._element.xml
+    assert " PAGE " in secoes[1].header._element.xml and " - 2 " in secoes[1].header._element.xml
+
+
+def test_campo_de_pagina_aninha_page_corretamente():
+    """Regressão crítica: a primeira versão escrevia a instrução do campo
+    de fórmula como texto simples " =PAGE-2 " (uma string só). O Word só
+    reconhece PAGE como o campo nativo de número de página quando ele está
+    ANINHADO como um campo de verdade (outro par begin/instrText/end)
+    dentro da fórmula -- escrito como texto simples, "PAGE" é interpretado
+    como o nome de um indicador (bookmark) inexistente, e o campo mostra
+    "Erro! Indicador não definido." em vez do número (confirmado abrindo o
+    arquivo gerado no Word de verdade)."""
+    from docx.oxml.ns import qn
+
+    d = _construir_docx_com_secoes()
+    aplicar_numeracao_paginas(d)
+
+    header = d.sections[3].header
+    runs = header.paragraphs[0]._p.findall(f".//{qn('w:r')}")
+
+    tipos_e_textos = []
+    for r in runs:
+        fld = r.find(qn("w:fldChar"))
+        if fld is not None:
+            tipos_e_textos.append(("fld", fld.get(qn("w:fldCharType"))))
+            continue
+        instr = r.find(qn("w:instrText"))
+        if instr is not None:
+            tipos_e_textos.append(("instr", instr.text))
+
+    # campo externo (fórmula) -- begin, depois "=", depois o campo PAGE
+    # aninhado (begin/instrText/end) ANTES do "- 2", depois separate/end.
+    assert tipos_e_textos == [
+        ("fld", "begin"),
+        ("instr", " = "),
+        ("fld", "begin"),
+        ("instr", " PAGE "),
+        ("fld", "end"),
+        ("instr", " - 2 "),
+        ("fld", "separate"),
+        ("fld", "end"),
+    ]
 
 
 def test_remove_reinicio_de_numeracao_de_todas_as_secoes():

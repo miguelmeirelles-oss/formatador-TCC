@@ -30,6 +30,14 @@ RE_LEGENDA = re.compile(
     r"^(figura|quadro|tabela|gr[aá]fico|equa[cç][aã]o)\s*\d+", re.IGNORECASE
 )
 RE_FONTE = re.compile(r"^fonte\s*:", re.IGNORECASE)
+# Marca a folha destinada à Ficha Catalográfica -- um elemento pré-textual
+# obrigatório (Apêndice I / NBR 14724) cujo conteúdo, no modelo oficial e em
+# TCCs reais, é sempre um texto fixo mencionando "Ficha Catalográfica"
+# (preenchida depois pela biblioteca). Diferente do título do trabalho ou do
+# nome do autor -- que são digitados livremente pelo aluno e não têm um
+# padrão de texto confiável -- esse é um marcador seguro para saber que uma
+# nova página pré-textual está começando ali.
+RE_FICHA_CATALOGRAFICA = re.compile(r"ficha\s+catalogr[aá]fica", re.IGNORECASE)
 # Linha de sumário: termina em número de página (com ou sem tab/pontos de
 # preenchimento antes), ex.: "1\tINTRODUÇÃO\t12" ou "REFERÊNCIAS  22". As
 # páginas pré-textuais (antes da Introdução) costumam ser numeradas em
@@ -88,6 +96,20 @@ _ESTILOS_TITULO_NUMERADO = {
     nome for nome, categoria in _MAPA_ESTILO_WORD.items()
     if categoria in ("titulo1", "titulo2", "titulo3", "titulo4", "titulo5")
 }
+
+
+def em_zona_pre_textual(estado: EstadoClassificacao) -> bool:
+    return estado.zona == ZONA_PRE_TEXTUAL
+
+
+def eh_marcador_ficha_catalografica(texto: str) -> bool:
+    """True se o parágrafo menciona a Ficha Catalográfica -- ver
+    RE_FICHA_CATALOGRAFICA. Limitado a textos curtos (a folha em si é só
+    um aviso -- no modelo oficial e em TCCs reais, algo como "Folha
+    destinada à inclusão da Ficha Catalográfica...", raramente passando de
+    duas ou três frases) para não confundir uma referência bibliográfica
+    ou nota de rodapé que por acaso cite o termo."""
+    return len(texto) < 400 and bool(RE_FICHA_CATALOGRAFICA.search(texto))
 
 
 def eh_nome_de_estilo_titulo_numerado(nome_estilo: str | None) -> bool:

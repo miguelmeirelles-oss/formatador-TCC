@@ -124,7 +124,15 @@ def _indice_primeiro_titulo1(document) -> int | None:
 
 
 def _construir_campo_numero_pagina(paragraph) -> None:
-    """Substitui o conteúdo do parágrafo por um campo `{ =PAGE-N }`."""
+    """Substitui o conteúdo do parágrafo por um campo `{ = { PAGE } - N }`.
+
+    Um campo de fórmula (`{ = ... }`) só reconhece PAGE como o campo nativo
+    de número de página se ele for ANINHADO como um campo de verdade (outro
+    par begin/instrText/end dentro da instrução da fórmula) -- escrever
+    "PAGE" como texto simples dentro de `{ =PAGE-2 }` faz o Word tratar
+    "PAGE" como o nome de um indicador (bookmark) inexistente, e o campo
+    mostra "Erro! Indicador não definido." em vez do número.
+    """
     p = paragraph._p
     for child in list(p.findall(qn("w:r"))):
         p.remove(child)
@@ -134,32 +142,35 @@ def _construir_campo_numero_pagina(paragraph) -> None:
         p.append(r)
         return r
 
-    r1 = novo_run()
-    begin = OxmlElement("w:fldChar")
-    begin.set(qn("w:fldCharType"), "begin")
-    begin.set(qn("w:dirty"), "true")
-    r1.append(begin)
+    def instrText(texto):
+        r = novo_run()
+        instr = OxmlElement("w:instrText")
+        instr.set(qn("xml:space"), "preserve")
+        instr.text = texto
+        r.append(instr)
 
-    r2 = novo_run()
-    instr = OxmlElement("w:instrText")
-    instr.set(qn("xml:space"), "preserve")
-    instr.text = f" =PAGE-{PAGINAS_EXCLUIDAS_DA_CONTAGEM} "
-    r2.append(instr)
+    def fldChar(tipo):
+        r = novo_run()
+        fc = OxmlElement("w:fldChar")
+        fc.set(qn("w:fldCharType"), tipo)
+        if tipo == "begin":
+            fc.set(qn("w:dirty"), "true")
+        r.append(fc)
 
-    r3 = novo_run()
-    sep = OxmlElement("w:fldChar")
-    sep.set(qn("w:fldCharType"), "separate")
-    r3.append(sep)
+    fldChar("begin")           # campo externo (fórmula) -- begin
+    instrText(" = ")
+    fldChar("begin")           # campo interno (PAGE) -- begin
+    instrText(" PAGE ")
+    fldChar("end")             # campo interno (PAGE) -- end
+    instrText(f" - {PAGINAS_EXCLUIDAS_DA_CONTAGEM} ")
+    fldChar("separate")        # campo externo -- separator (resultado em cache abaixo)
 
-    r4 = novo_run()
+    r_resultado = novo_run()
     t = OxmlElement("w:t")
     t.text = "1"
-    r4.append(t)
+    r_resultado.append(t)
 
-    r5 = novo_run()
-    end = OxmlElement("w:fldChar")
-    end.set(qn("w:fldCharType"), "end")
-    r5.append(end)
+    fldChar("end")              # campo externo -- end
 
 
 def aplicar_numeracao_paginas(document) -> ResultadoPaginacao:

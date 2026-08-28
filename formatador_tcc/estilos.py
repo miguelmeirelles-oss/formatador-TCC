@@ -12,8 +12,28 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
+from docx.text.run import Run
 
 from .config import EstiloParagrafo
+
+
+def runs_completos(paragraph) -> list[Run]:
+    """Todos os `w:r` do parágrafo, incluindo os que estão dentro de um
+    `w:hyperlink` -- comum em referências cruzadas automáticas (ex.: o
+    número de página numa Lista de Figuras/Tabelas gerada via Inserir >
+    Referência Cruzada). `paragraph.runs` do python-docx só enxerga os
+    `w:r` soltos direto dentro do parágrafo, então um hyperlink inteiro
+    ficava sem receber nenhuma normalização de fonte -- mesmo depois de
+    "formatado", esses trechos continuavam na fonte original do aluno."""
+    runs: list[Run] = []
+    for filho in paragraph._p:
+        if filho.tag == qn("w:r"):
+            runs.append(Run(filho, paragraph))
+        elif filho.tag == qn("w:hyperlink"):
+            for r_el in filho.findall(qn("w:r")):
+                runs.append(Run(r_el, paragraph))
+    return runs
+
 
 _ALINHAMENTO = {
     "justify": WD_ALIGN_PARAGRAPH.JUSTIFY,
@@ -39,7 +59,7 @@ def aplicar_estilo(
     pf.first_line_indent = Cm(estilo.recuo_primeira_linha_cm) if estilo.recuo_primeira_linha_cm else Cm(0)
     pf.left_indent = Cm(estilo.recuo_esquerdo_cm) if estilo.recuo_esquerdo_cm else None
 
-    for run in paragraph.runs:
+    for run in runs_completos(paragraph):
         if forcar_fonte:
             run.font.name = estilo.fonte
             run.font.size = Pt(estilo.tamanho_pt)
