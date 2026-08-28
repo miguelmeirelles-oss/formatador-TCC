@@ -90,6 +90,34 @@ def test_reprocessar_documento_ja_formatado_nao_duplica_campo(construir_docx):
     assert campos_2a_passada == 1
 
 
+def test_estilos_toc_usam_a_fonte_do_corpo(construir_docx):
+    """Regressão: quando o Word recalcula o campo `{ TOC }`, cada entrada
+    gerada usa o estilo embutido "TOC 1".."TOC 9" -- se o documento não os
+    define, o Word cria versões padrão baseadas em "Normal" na hora, e como
+    o "Normal" muitas vezes não tem fonte própria definida (cai no padrão
+    do template, ex.: Arial 11), as entradas do Sumário saem numa fonte
+    diferente do resto do trabalho -- o Apêndice I exige "apenas um dos
+    tipos [de fonte] escolhidos em todo o trabalho", tamanho 12."""
+    from docx.oxml.ns import qn
+    from formatador_tcc import config
+
+    d = construir_docx([
+        ("titulo_sem_numero", "SUMÁRIO"),
+        ("heading1", "INTRODUÇÃO"),
+        ("texto", "Corpo do texto."),
+    ])
+    reconstruir_sumario(d)
+
+    styles_element = d.styles.element
+    for nivel in range(1, 6):
+        estilo = styles_element.find(f'{qn("w:style")}[@{qn("w:styleId")}="TOC{nivel}"]')
+        assert estilo is not None, f"estilo TOC{nivel} não foi definido"
+        rFonts = estilo.find(f'{qn("w:rPr")}/{qn("w:rFonts")}')
+        assert rFonts.get(qn("w:ascii")) == config.CORPO_TEXTO.fonte
+        sz = estilo.find(f'{qn("w:rPr")}/{qn("w:sz")}')
+        assert sz.get(qn("w:val")) == str(int(config.CORPO_TEXTO.tamanho_pt * 2))
+
+
 def test_reprocessar_tres_vezes_permanece_estavel(construir_docx):
     d = construir_docx([
         ("titulo_sem_numero", "SUMÁRIO"),

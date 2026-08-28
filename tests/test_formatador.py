@@ -92,6 +92,25 @@ def test_quebra_de_pagina_so_em_titulo1(construir_docx):
     assert d.paragraphs[3].paragraph_format.page_break_before is False
 
 
+def test_quebra_de_pagina_tambem_em_titulo_sem_numero(construir_docx):
+    """Regressão: um TCC real relia só em parágrafos em branco (não em
+    quebra de página/seção real) para separar Dedicatória, Agradecimentos,
+    Resumo, Abstract, Listas e Sumário -- ao reformatar (fonte/espaçamento
+    diferentes), esses elementos deixavam de começar em página própria. O
+    Modelo de TCC oficial mostra que cada um desses elementos pré-textuais
+    começa em página/seção própria, igual às seções primárias."""
+    d = construir_docx([
+        ("texto", "Capa (texto livre, não classificável)."),
+        ("titulo_sem_numero", "RESUMO"),
+        ("texto", "Texto do resumo."),
+        ("titulo_sem_numero", "SUMÁRIO"),
+    ])
+    formatar_documento(d)
+    assert d.paragraphs[1].paragraph_format.page_break_before is True
+    assert d.paragraphs[2].paragraph_format.page_break_before is False
+    assert d.paragraphs[3].paragraph_format.page_break_before is True
+
+
 def test_fonte_ilustracao_negrito_apenas_no_prefixo(construir_docx):
     d = construir_docx([
         ("titulo_sem_numero", "SUMÁRIO"),

@@ -40,7 +40,12 @@ _REGRAS = {
 }
 
 # Apêndice I: "As seções primárias devem iniciar SEMPRE em páginas distintas."
-_CATEGORIAS_COM_QUEBRA_DE_PAGINA = {"titulo1"}
+# O Modelo de TCC oficial confirma que o mesmo vale para os elementos
+# pré-textuais sem indicativo numérico (Dedicatória, Agradecimentos, Resumo,
+# Abstract, Listas, Sumário...): no arquivo do modelo, cada um deles começa
+# numa seção/página própria -- por isso "titulo_sem_numero" entra aqui
+# também, não só "titulo1".
+_CATEGORIAS_COM_QUEBRA_DE_PAGINA = {"titulo1", "titulo_sem_numero"}
 
 
 @dataclass

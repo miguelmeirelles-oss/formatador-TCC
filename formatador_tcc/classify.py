@@ -18,6 +18,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from docx.oxml.ns import qn
+
 from .texto import normalizar
 from .config import SECOES_SEM_NUMERO, SECOES_POS_TEXTUAIS_TITULO1
 
@@ -120,6 +122,88 @@ def _eh_citacao_longa_provavel(texto: str) -> bool:
     return False
 
 
+_RE_PLACEHOLDER_NIVEL = re.compile(r"%\d")
+
+
+def _num_placeholders(lvl_text: str | None) -> int:
+    if not lvl_text:
+        return 0
+    return len(_RE_PLACEHOLDER_NIVEL.findall(lvl_text))
+
+
+def _nivel_titulo_por_lista_multinivel(paragraph) -> int | None:
+    """Detecta título numerado via lista multinível automática do Word
+    (Formatar > Lista de Vários Níveis) -- comum quando o aluno usa esse
+    recurso nativo em vez de digitar o número manualmente ou aplicar o
+    estilo Heading. Nesse caso o "1"/"1.1" visível não está no texto do
+    parágrafo (document.paragraphs não veria) nem no nome do estilo -- só
+    no nível da lista (w:numPr/w:ilvl + w:numId), então não há como esta
+    função ser dispensada nesses documentos.
+
+    Só reconhece como título se a lista associada for de fato uma
+    numeração progressiva hierárquica, isto é, cada nível acumula os
+    contadores dos níveis anteriores (ex.: "1.", "1.1.", "1.1.1." -- o
+    mesmo padrão do Apêndice I) -- não uma lista comum (marcadores, lista
+    numerada de um nível só etc., que o aluno pode ter usado para
+    enumerar itens no corpo do texto, sem relação com títulos)."""
+    pPr = paragraph._p.find(qn("w:pPr"))
+    if pPr is None:
+        return None
+    numPr = pPr.find(qn("w:numPr"))
+    if numPr is None:
+        return None
+    numId_el = numPr.find(qn("w:numId"))
+    if numId_el is None:
+        return None
+    numId = numId_el.get(qn("w:val"))
+    ilvl_el = numPr.find(qn("w:ilvl"))
+    ilvl = int(ilvl_el.get(qn("w:val"))) if ilvl_el is not None else 0
+
+    try:
+        numbering = paragraph.part.numbering_part.element
+    except Exception:
+        return None
+
+    num_el = numbering.find(f'{qn("w:num")}[@{qn("w:numId")}="{numId}"]')
+    if num_el is None:
+        return None
+    abstract_ref = num_el.find(qn("w:abstractNumId"))
+    if abstract_ref is None:
+        return None
+    abstract_id = abstract_ref.get(qn("w:val"))
+    abstract_el = numbering.find(f'{qn("w:abstractNum")}[@{qn("w:abstractNumId")}="{abstract_id}"]')
+    if abstract_el is None:
+        return None
+
+    def nivel_xml(idx):
+        return abstract_el.find(f'{qn("w:lvl")}[@{qn("w:ilvl")}="{idx}"]')
+
+    lvl_atual = nivel_xml(ilvl)
+    if lvl_atual is None:
+        return None
+    numFmt = lvl_atual.find(qn("w:numFmt"))
+    if numFmt is None or numFmt.get(qn("w:val")) != "decimal":
+        return None
+    lvlText = lvl_atual.find(qn("w:lvlText"))
+    texto_nivel = lvlText.get(qn("w:val")) if lvlText is not None else None
+    if _num_placeholders(texto_nivel) != ilvl + 1:
+        return None
+
+    # confirma que é de fato uma lista hierárquica (não uma lista de nível
+    # único que por coincidência começa em "%1.") -- o nível 1 dessa MESMA
+    # definição de lista precisa acumular 2 contadores, mesmo que o
+    # parágrafo atual não use esse nível.
+    lvl1 = nivel_xml(1)
+    if lvl1 is None:
+        return None
+    lvlText1 = lvl1.find(qn("w:lvlText"))
+    texto_nivel1 = lvlText1.get(qn("w:val")) if lvlText1 is not None else None
+    if _num_placeholders(texto_nivel1) != 2:
+        return None
+
+    return min(ilvl, 4) + 1  # 1 a 5 (limite da seção quinária, Apêndice I)
+
+
 _LIMITE_PALAVRAS_TITULO = 15
 
 
@@ -201,6 +285,15 @@ def classificar_paragrafo(paragraph, estado: EstadoClassificacao) -> str:
         estado.zona = ZONA_CORPO
         estado.logo_apos_titulo = True
         return f"titulo{nivel}"
+
+    # 4b) Título numerado via lista multinível automática do Word (o número
+    #     não está no texto do parágrafo -- ver _nivel_titulo_por_lista_multinivel).
+    if estado.zona in (ZONA_PRE_TEXTUAL, ZONA_CORPO) and _parece_titulo(texto):
+        nivel_lista = _nivel_titulo_por_lista_multinivel(paragraph)
+        if nivel_lista is not None:
+            estado.zona = ZONA_CORPO
+            estado.logo_apos_titulo = True
+            return f"titulo{nivel_lista}"
 
     if estilo_mapeado == "legenda":
         estado.logo_apos_titulo = False

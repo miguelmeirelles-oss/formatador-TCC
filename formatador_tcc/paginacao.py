@@ -52,6 +52,21 @@ def _mapear_paragrafo_para_secao(document) -> list[int]:
     return mapa
 
 
+def _remover_reinicio_numeracao(sectPr) -> None:
+    """Remove `w:pgNumType/@w:start` (reinício de contagem de página) de uma
+    seção. A contagem de página do documento deve ser contínua do começo ao
+    fim (ver docstring do módulo) -- se qualquer seção reiniciar em 1, o
+    campo `{ =PAGE-2 }` inserido na Introdução passa a contar a partir
+    dessa seção, não do documento inteiro."""
+    pgNumType = sectPr.find(qn("w:pgNumType"))
+    if pgNumType is None:
+        return
+    if pgNumType.get(qn("w:start")) is not None:
+        del pgNumType.attrib[qn("w:start")]
+    if len(pgNumType.attrib) == 0:
+        sectPr.remove(pgNumType)
+
+
 def _garantir_secao_propria_a_partir_de(document, indice_paragrafo: int) -> None:
     """Garante que o parágrafo em `indice_paragrafo` seja o primeiro de uma
     seção própria, inserindo uma quebra de seção (nova página) logo antes
@@ -89,6 +104,14 @@ def _garantir_secao_propria_a_partir_de(document, indice_paragrafo: int) -> None
 
     ppr = anterior._p.get_or_add_pPr()
     ppr.append(nova_sectPr)
+
+    # a numeração de página (ver aplicar_numeracao_paginas) depende da
+    # contagem de página FÍSICA e contínua do documento inteiro -- se esta
+    # seção nova (ou a original, copiada logo acima) reiniciar a contagem em
+    # 1, o campo PAGE da seção da Introdução passa a contar a partir do
+    # início dela mesma, não do documento inteiro, e "=PAGE-2" mostra um
+    # número errado (às vezes até negativo).
+    _remover_reinicio_numeracao(nova_sectPr)
 
 
 def _indice_primeiro_titulo1(document) -> int | None:
@@ -145,6 +168,15 @@ def aplicar_numeracao_paginas(document) -> ResultadoPaginacao:
         return ResultadoPaginacao(aplicada=False)
 
     _garantir_secao_propria_a_partir_de(document, indice_intro)
+
+    # o documento do aluno pode já trazer, na sua única seção original, um
+    # reinício de numeração (comum: o Word grava `w:start="1"` por padrão
+    # mesmo quando o autor nunca mexeu nisso) -- precisa ser removido de
+    # TODAS as seções, não só da que acabou de ser criada acima, senão a
+    # seção da Introdução conta a partir de si mesma em vez do documento
+    # inteiro.
+    for s in document.sections:
+        _remover_reinicio_numeracao(s._sectPr)
 
     mapa_secoes = _mapear_paragrafo_para_secao(document)
     if indice_intro >= len(mapa_secoes):

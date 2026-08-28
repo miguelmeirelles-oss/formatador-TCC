@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
+from . import config
 from .classify import EstadoClassificacao, classificar_paragrafo, MARCADOR_CAMPO_SUMARIO
 from .texto import normalizar
 
@@ -92,6 +93,59 @@ def _forcar_atualizacao_de_campos_ao_abrir(document) -> None:
     settings.append(el)
 
 
+# Quando o Word recalcula o campo `{ TOC }`, cada entrada gerada usa o
+# estilo de parágrafo embutido "TOC 1".."TOC 9" -- se o documento não os
+# define, o Word cria versões padrão baseadas em "Normal" na hora, e como
+# muitos modelos (inclusive o Modelo de TCC oficial) não sobrescrevem a
+# fonte do "Normal", essas entradas saem na fonte/tamanho padrão do Word
+# (ex.: Arial 11), não na fonte definida para o resto do trabalho. O
+# Apêndice I é explícito: "Deve-se utilizar apenas um dos tipos [de fonte]
+# escolhidos em todo o trabalho" (tamanho 12) -- por isso os estilos do
+# Sumário são definidos aqui explicitamente com a mesma fonte do corpo do
+# texto (config.CORPO_TEXTO), para as entradas geradas ficarem consistentes
+# com o resto do documento em vez de usar a fonte "antiga" do template.
+_NIVEIS_ESTILO_TOC = 5  # Apêndice I limita a numeração até a seção quinária.
+
+
+def _garantir_estilos_sumario(document) -> None:
+    styles_element = document.styles.element
+    for nivel in range(1, _NIVEIS_ESTILO_TOC + 1):
+        style_id = f"TOC{nivel}"
+        estilo_existente = styles_element.find(f'{qn("w:style")}[@{qn("w:styleId")}="{style_id}"]')
+        if estilo_existente is not None:
+            rPr = estilo_existente.find(qn("w:rPr"))
+            if rPr is None:
+                rPr = OxmlElement("w:rPr")
+                estilo_existente.append(rPr)
+        else:
+            estilo_existente = OxmlElement("w:style")
+            estilo_existente.set(qn("w:type"), "paragraph")
+            estilo_existente.set(qn("w:styleId"), style_id)
+            nome = OxmlElement("w:name")
+            nome.set(qn("w:val"), f"toc {nivel}")
+            estilo_existente.append(nome)
+            based_on = OxmlElement("w:basedOn")
+            based_on.set(qn("w:val"), "Normal")
+            estilo_existente.append(based_on)
+            rPr = OxmlElement("w:rPr")
+            estilo_existente.append(rPr)
+            styles_element.append(estilo_existente)
+
+        for filho in list(rPr):
+            rPr.remove(filho)
+        rFonts = OxmlElement("w:rFonts")
+        rFonts.set(qn("w:ascii"), config.CORPO_TEXTO.fonte)
+        rFonts.set(qn("w:hAnsi"), config.CORPO_TEXTO.fonte)
+        rFonts.set(qn("w:cs"), config.CORPO_TEXTO.fonte)
+        rPr.append(rFonts)
+        sz = OxmlElement("w:sz")
+        sz.set(qn("w:val"), str(int(config.CORPO_TEXTO.tamanho_pt * 2)))
+        rPr.append(sz)
+        szCs = OxmlElement("w:szCs")
+        szCs.set(qn("w:val"), str(int(config.CORPO_TEXTO.tamanho_pt * 2)))
+        rPr.append(szCs)
+
+
 def _construir_campo_toc(paragraph) -> None:
     """Substitui o conteúdo do parágrafo por um campo `{ TOC \\o "1-5" \\h \\z \\u }`."""
     p = paragraph._p
@@ -158,6 +212,7 @@ def reconstruir_sumario(document) -> ResultadoSumario:
         alvo.getparent().remove(alvo)
         removidos += 1
 
+    _garantir_estilos_sumario(document)
     _forcar_atualizacao_de_campos_ao_abrir(document)
 
     return ResultadoSumario(encontrado=True, entradas_removidas=removidos, campo_inserido=True)

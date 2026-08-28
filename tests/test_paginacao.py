@@ -1,5 +1,6 @@
 import docx
 from docx.enum.section import WD_SECTION
+from docx.oxml import OxmlElement
 
 from formatador_tcc.paginacao import aplicar_numeracao_paginas
 
@@ -127,6 +128,29 @@ def test_limpa_campo_de_pagina_deixado_em_secao_pretextual_por_execucao_anterior
     # mais ter o "2" órfão da execução anterior
     assert "".join(p.text for p in secoes[0].header.paragraphs) == ""
     assert "=PAGE-2" in secoes[1].header._element.xml
+
+
+def test_remove_reinicio_de_numeracao_de_todas_as_secoes():
+    """Regressão: um TCC real trazia `w:pgNumType w:start="1"` na (única)
+    seção original do aluno. Como python-docx.add_section copia essa
+    propriedade, tanto a seção pré-textual criada quanto a seção da
+    Introdução acabavam reiniciando a contagem de página em 1 -- e o campo
+    `=PAGE-2` da Introdução, em vez de mostrar a página física real do
+    documento (ex.: 13), mostrava um número baixo ou até negativo, porque
+    contava só a partir do início da própria seção, não do documento
+    inteiro."""
+    from docx.oxml.ns import qn
+
+    d = _construir_docx_secao_unica()
+    # como o Word grava por padrão: reinício de numeração em 1.
+    pgNumType = OxmlElement("w:pgNumType")
+    pgNumType.set(qn("w:start"), "1")
+    d.sections[0]._sectPr.append(pgNumType)
+
+    aplicar_numeracao_paginas(d)
+
+    for secao in d.sections:
+        assert secao._sectPr.find(qn("w:pgNumType")) is None
 
 
 def test_documento_sem_titulo1_nao_aplica_numeracao():
