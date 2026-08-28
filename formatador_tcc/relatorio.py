@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections import Counter
 
+from .capa import ResultadoCapa
 from .citacoes import ResultadoCruzamento
 from .contagem import RelatorioContagem
 from .formatador import EventoFormatacao
@@ -45,8 +46,51 @@ def _bloco_formatacao(eventos: list[EventoFormatacao]) -> list[str]:
     return linhas
 
 
+def _bloco_capa(resultado: ResultadoCapa) -> list[str]:
+    linhas = ["", "## 2. Capa e Folha de Rosto", ""]
+    total = (
+        resultado.titulos_formatados + resultado.autores_formatados
+        + resultado.tipos_documento_formatados + resultado.naturezas_formatadas
+        + resultado.orientadores_formatados + resultado.institucoes_formatadas
+    )
+    if total == 0:
+        linhas.append(
+            "Não foi possível reconhecer com segurança os elementos da Capa/Folha de "
+            "Rosto (título, nome do autor...) -- confira manualmente se seguem o "
+            "Apêndice I (negrito, caixa alta, centralizado, tamanho 14 para o título "
+            "e 12 para o restante)."
+        )
+        return linhas
+    linhas.append(
+        "Reconhecidos a partir de âncoras de texto fixo (\"TRABALHO DE CONCLUSÃO DE "
+        "CURSO\" na Capa, \"Trabalho de Conclusão de Curso apresentado...\" na Folha "
+        "de Rosto) -- a posição dos blocos de texto ao redor dessas âncoras segue a "
+        "ordem descrita no Apêndice I:"
+    )
+    linhas.append("")
+    if resultado.titulos_formatados:
+        linhas.append(f"- Título do trabalho: {resultado.titulos_formatados} (negrito, caixa alta, tamanho 14, centralizado)")
+    if resultado.autores_formatados:
+        linhas.append(f"- Nome do(s) autor(es): {resultado.autores_formatados} (negrito, caixa alta, tamanho 12, centralizado)")
+    if resultado.tipos_documento_formatados:
+        linhas.append(f"- Tipo do documento (Capa): {resultado.tipos_documento_formatados}")
+    if resultado.naturezas_formatadas:
+        linhas.append(f"- Natureza do trabalho (Folha de Rosto): {resultado.naturezas_formatadas}")
+    if resultado.orientadores_formatados:
+        linhas.append(f"- Orientador(es): {resultado.orientadores_formatados}")
+    if resultado.institucoes_formatadas:
+        linhas.append(f"- Nome da instituição: {resultado.institucoes_formatadas}")
+    linhas.append("")
+    linhas.append(
+        "**Importante:** Local e Ano (últimas linhas da Capa/Folha de Rosto) não são "
+        "reconhecidos automaticamente -- confira manualmente se estão em negrito, "
+        "caixa alta, centralizados, tamanho 12."
+    )
+    return linhas
+
+
 def _bloco_sumario(resultado: ResultadoSumario) -> list[str]:
-    linhas = ["", "## 2. Sumário", ""]
+    linhas = ["", "## 3. Sumário", ""]
     if not resultado.encontrado:
         linhas.append("Não foi encontrado um título \"SUMÁRIO\" no documento -- o sumário "
                        "não pôde ser reconstruído automaticamente. Verifique se essa página "
@@ -67,7 +111,7 @@ def _bloco_sumario(resultado: ResultadoSumario) -> list[str]:
 
 
 def _bloco_paginacao(resultado: ResultadoPaginacao) -> list[str]:
-    linhas = ["", "## 3. Numeração de página", ""]
+    linhas = ["", "## 4. Numeração de página", ""]
     if not resultado.aplicada:
         linhas.append(
             "Não foi possível localizar o início da Introdução -- a numeração de página não "
@@ -89,7 +133,7 @@ def _bloco_paginacao(resultado: ResultadoPaginacao) -> list[str]:
 
 
 def _bloco_contagem(rel: RelatorioContagem) -> list[str]:
-    linhas = ["", "## 4. Contagem de palavras (Resumo/Abstract)", ""]
+    linhas = ["", "## 5. Contagem de palavras (Resumo/Abstract)", ""]
     for secao in (rel.resumo, rel.abstract):
         marca = "✅" if secao.dentro_do_limite else "⚠️"
         linhas.append(f"- {marca} {secao.mensagem}")
@@ -97,7 +141,7 @@ def _bloco_contagem(rel: RelatorioContagem) -> list[str]:
 
 
 def _bloco_citacoes(res: ResultadoCruzamento) -> list[str]:
-    linhas = ["", "## 5. Cruzamento entre citações e referências", ""]
+    linhas = ["", "## 6. Cruzamento entre citações e referências", ""]
     linhas.append(f"- {len(res.citacoes)} citação(ões) identificada(s) no corpo do texto.")
     linhas.append(f"- {len(res.referencias)} entrada(s) na lista de Referências.")
     linhas.append("")
@@ -133,7 +177,7 @@ def _bloco_citacoes(res: ResultadoCruzamento) -> list[str]:
 
 
 def _bloco_referencias(rel: RelatorioReferencias) -> list[str]:
-    linhas = ["", "## 6. Formatação das Referências (NBR 6023)", ""]
+    linhas = ["", "## 7. Formatação das Referências (NBR 6023)", ""]
     linhas.append(f"{rel.total_entradas} entrada(s) verificada(s).")
     linhas.append("")
 
@@ -163,6 +207,7 @@ def gerar_relatorio_markdown(
     nome_entrada: str,
     nome_saida: str,
     eventos_formatacao: list[EventoFormatacao],
+    resultado_capa: ResultadoCapa,
     resultado_sumario: ResultadoSumario,
     resultado_paginacao: ResultadoPaginacao,
     resultado_citacoes: ResultadoCruzamento,
@@ -180,6 +225,7 @@ def gerar_relatorio_markdown(
         "normas nem a orientação do seu professor orientador.",
     ]
     linhas += _bloco_formatacao(eventos_formatacao)
+    linhas += _bloco_capa(resultado_capa)
     linhas += _bloco_sumario(resultado_sumario)
     linhas += _bloco_paginacao(resultado_paginacao)
     linhas += _bloco_contagem(relatorio_contagem)

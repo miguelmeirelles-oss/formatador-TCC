@@ -11,6 +11,7 @@ from dataclasses import dataclass
 
 import docx
 
+from .capa import formatar_capa_e_folha_de_rosto
 from .citacoes import cruzar_citacoes_e_referencias
 from .contagem import verificar_contagem_resumo
 from .formatador import formatar_documento
@@ -36,6 +37,7 @@ def processar_docx_bytes(conteudo: bytes, *, nome_entrada: str, nome_saida: str)
     resultado_citacoes = cruzar_citacoes_e_referencias(document)
 
     eventos = formatar_documento(document)
+    resultado_capa = formatar_capa_e_folha_de_rosto(document)
     resultado_sumario = reconstruir_sumario(document)
     resultado_paginacao = aplicar_numeracao_paginas(document)
 
@@ -46,6 +48,7 @@ def processar_docx_bytes(conteudo: bytes, *, nome_entrada: str, nome_saida: str)
         nome_entrada=nome_entrada,
         nome_saida=nome_saida,
         eventos_formatacao=eventos,
+        resultado_capa=resultado_capa,
         resultado_sumario=resultado_sumario,
         resultado_paginacao=resultado_paginacao,
         resultado_citacoes=resultado_citacoes,

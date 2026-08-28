@@ -176,6 +176,52 @@ REFERENCIA = EstiloParagrafo(
     espaco_depois_pt=6.0,
 )
 
+# CAPA -- Apêndice I: cabeçalho (instituição/departamento/curso), nome do
+# autor, tipo do documento (TRABALHO DE CONCLUSÃO DE CURSO/MONOGRAFIA/
+# DISSERTAÇÃO), local e ano -- todos "fonte tamanho 12, CAIXA ALTA,
+# negrito, centralizado e com espaçamento 1,5 cm entre linhas".
+ELEMENTO_CAPA = EstiloParagrafo(
+    tamanho_pt=12.0,
+    negrito=True,
+    maiusculas=True,
+    alinhamento="center",
+    espacamento_linha=1.5,
+)
+
+# CAPA e FOLHA DE ROSTO -- Apêndice I: "Título: em fonte tamanho 14, CAIXA
+# ALTA, negrito, centralizado e com espaçamento 1,5 cm entre linhas."
+TITULO_TRABALHO_CAPA = EstiloParagrafo(
+    tamanho_pt=14.0,
+    negrito=True,
+    maiusculas=True,
+    alinhamento="center",
+    espacamento_linha=1.5,
+)
+
+# FOLHA DE ROSTO -- Apêndice I: "Natureza do trabalho... nome do orientador
+# e do co-orientador (se houver), sem negrito, espaçamento simples" e,
+# mais adiante (seção MARGEM): "a natureza do trabalho, o objetivo, o nome
+# da instituição a que é submetida e a área de concentração devem ser
+# alinhados do meio da mancha (espelho/área ocupada pelo texto) para a
+# margem direita" -- a mancha tem 16 cm (21 - 3 - 2), então o meio fica a
+# 8 cm da margem esquerda.
+NATUREZA_TRABALHO = EstiloParagrafo(
+    tamanho_pt=12.0,
+    negrito=False,
+    maiusculas=False,
+    alinhamento="left",
+    espacamento_linha=1.0,
+    recuo_esquerdo_cm=8.0,
+)
+
+# Textos fixos (não digitados livremente pelo aluno) que identificam com
+# segurança os elementos da Capa/Folha de Rosto -- ver capa.py. Comparação
+# feita normalizada (maiúsculas, sem acento). O Apêndice I só lista
+# "TRABALHO DE CONCLUSÃO DE CURSO, MONOGRAFIA ou DISSERTAÇÃO", mas "PROJETO
+# FINAL" também aparece em documentos reais desta instituição (nome mais
+# antigo do mesmo tipo de trabalho, usado por alguns cursos/anos).
+TIPOS_DE_DOCUMENTO = {"TRABALHO DE CONCLUSAO DE CURSO", "MONOGRAFIA", "DISSERTACAO", "PROJETO FINAL"}
+
 # Nomes de seções "sem indicativo numérico" que, no modelo oficial, usam o
 # estilo centralizado (Título de Seção / 16pt) e NÃO entram no Sumário:
 # elementos pré-textuais + listas. Comparação feita normalizada (maiúsculas,
